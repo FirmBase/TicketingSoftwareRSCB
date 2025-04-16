@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unauthorized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	th:href="@{/lib/css/GoogleFonts.css}"
+	rel="stylesheet">
+<link
+	th:href="@{/lib/css/bootstrap.min.css}"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+
+
+<script th:src="@{/lib/js/jquery-3.7.1.js}"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/c634b3cef4.js}"
+	crossorigin="anonymous"></script>
+
+<script
+	th:src="@{/lib/js/popper.min.js}"
+	integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{/lib/js/bootstrap.min.js}"
+	integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+	crossorigin="anonymous"></script>
+<link th:href="@{/css/standard.css}" rel="stylesheet" />
+<style>
+  .fill-body{
+   height: 88vh;
+  }
+   h1 .icon{
+    font-size: 100px;
+  }
+    h1{
+   font-weight: 600;
+  }
+</style>
+</head>
+<body>
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+	<div th:replace="~{fragments/toast :: toast}"></div>
+	<div
+		class="container-fluid text-center d-flex justify-content-center align-items-center fill-body">
+		<div>
+		 <h1><i class="fa-regular fa-hand icon" ></i></h1>
+		 <h1>Access Denied</h1>
+		</div>
+	</div>
+</body>
+</html>
+
+
+
+<i class="fa-regular fa-face-frown-open"></i>
+
+
+

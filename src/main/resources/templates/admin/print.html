@@ -1,0 +1,200 @@
+<!-- 12.70cm × 9.50cm -->
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<link rel="shortcut icon" th:href="@{/icons/National_Council_of_Science_Museums_India_logo.png}"
+		type="image/png" sizes="316x316" />
+	<link rel="icon" th:href="@{/icons/National_Council_of_Science_Museums_India_logo.png}"
+		type="image/png" sizes="316x316" />
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- <meta name="color-scheme" content="dark light" /> -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link th:href="@{/lib/css/GoogleFonts.css}" rel="stylesheet" />
+		<!-- <link th:href="@{/css/standard.css}" rel="stylesheet" />  -->
+	<link th:href="@{/lib/css/bootstrap.min.css}" rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+
+		<script th:src="@{/lib/js/popper.min.js}" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+		<script th:src="@{/lib/js/bootstrap.min.js}" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+	<title>RSCB Ticket</title>
+	<style type="text/css">
+		input {
+			width: 75px;
+		}
+
+		#ticket_frame {
+			position: relative;
+			width: 12.7cm;
+			height: 9.5cm;
+			background-image: url('/images/ticket_page-0001-Cropped.png');
+			border: 1px solid grey;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+	<script th:src="@{/lib/js/jquery-3.7.1.js}"
+		integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+	<script th:inline="javascript" type="text/javascript">
+		$(document).ready(function () {
+			/*<![CDATA[*/
+			// console.log(/*[[${printAdjustList}]]*/);
+			const objects = JSON.parse('[[${printAdjustList}]]');
+			/*]]>*/
+			console.log(objects);
+			setFieldsEvent(objects);
+			// $(document).find("button[type=submit]").on("click", function () {
+				// sendFields(objects);
+			// });
+			setDefaultValues(objects);
+		});
+
+		function setFieldsEvent(objects) {
+			objects.forEach(function (object) {
+				const $top = $("#" + object.title + "_top");
+				$top.on("click keyup", function () {
+					$("#" + object.title).css("top", $(this).val() + "cm");
+				});
+
+				const $left = $("#" + object.title + "_left");
+				$left.on("click keyup", function () {
+					$("#" + object.title).css("left", $(this).val() + "cm");
+				});
+
+				const $height = $("#" + object.title + "_height");
+				$height.on("click keyup", function () {
+					$("#" + object.title).css("height", $(this).val() + "cm");
+				});
+
+				const $width = $("#" + object.title + "_width");
+				$width.on("click keyup", function () {
+					$("#" + object.title).css("width", $(this).val() + "cm");
+				});
+
+				const $text = $("#" + object.title + "_text");
+				$text.on("click keyup", function () {
+					$("#" + object.title).html($(this).val());
+				});
+
+				const $id = $("#" + object.title + "_id");
+			});
+		}
+
+		function setDefaultValues(objects) {
+			objects.forEach(function (object) {
+				if (object.title == "frame") {
+					$("#" + object.title).css("position", "relative");
+					$("#" + object.title).css("z-index", "-1");
+				}
+				else {
+					$("#" + object.title).css("position", "absolute");
+					$("#" + object.title).css("z-index", "1");
+				}
+				if (object.top != null) {
+					// $("#" + object.title + "_top").style.top = object.top;
+					$("#" + object.title).css("top", object.top + "cm");
+				}
+				if (object.left != null) {
+					// $("#" + object.title + "_left").style.left = object.left;
+					$("#" + object.title).css("left", object.left + "cm");
+				}
+				if (object.height != null) {
+					// $("#" + object.title + "_height").style.height = object.height;
+					$("#" + object.title).css("height", object.height + "cm");
+				}
+				if (object.width != null) {
+					// $("#" + object.title + "_top").style.width = object.width;
+					$("#" + object.title).css("width", object.width + "cm");
+				}
+			});
+		}
+
+		function sendFields(objects) {
+			let fields_object = [];
+			objects.forEach(function (object) {
+				const $top = $("#" + object.title + "_top");
+				const $left = $("#" + object.title + "_left");
+				const $text = $("#" + object.title + "_text");
+				const $id = $("#" + object.title + "_id");
+
+				fields_object.push({
+					title: object.title,
+					top: $left.val(),
+					left: $left.val(),
+					id: $id.val()
+				});
+			});
+
+			$.ajax({
+				url: "/manage/print/adjust",
+				method: "POST",
+				data: JSON.stringify(fields_object),
+				processData: false,
+				contentType: "application/json",
+				dataType: "json",
+				success: function (response) {
+					console.log("Sent.")
+				},
+				error: function (xhr, status, error) {
+					console.error("Failed.");
+				}
+			});
+		}
+	</script>
+</head>
+
+<body>
+	<div th:replace="fragments/navbar::navbar"></div>
+
+	<div th:replace="fragments/toast::toast"></div>
+
+	<div class="container-fluid">
+		<div class="row g-2">
+			<div class="col-6 mt-3">
+				<div id="ticket_frame">
+					<th:block th:each="printAdjust : ${printAdjustList}">
+						<div th:id="${printAdjust.title}" th:if="${!#strings.endsWith(printAdjust.title, 'frame')}">[[${printAdjust.text}]]</div>
+					</th:block>
+				</div>
+			</div>
+			<div class="col-6 mt-3">
+				<form method="POST" th:action="@{/manage/print/adjust}" enctype="application/x-www-form-urlencoded">
+					<fieldset th:each="printAdjust,stat : ${printAdjustList}">
+						<th:block th:if="${!printAdjust.title.equals('ticket_frame')}">
+							<legend th:text="${#strings.capitalizeWords(#strings.replace(printAdjust.title,'_',' '),' ')}"></legend>
+							<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
+							<input type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" />
+							<label th:for="${printAdjust.title + '_top'}">Y:</label>
+							<input type="number" step="0.01" th:id="${printAdjust.title + '_top'}" th:name="|printAdjustDTOs[${stat.index}].top|" th:value="${printAdjust.top}" />
+							<label th:for="${printAdjust.title + '_left'}">X:</label>
+							<input type="number" step="0.01" th:id="${printAdjust.title + '_left'}" th:name="|printAdjustDTOs[${stat.index}].left|" th:value="${printAdjust.left}" />
+							<label th:for="${printAdjust.title + '_text'}">Text:</label>
+							<input type="text" th:id="${printAdjust.title + '_text'}" th:name="|printAdjustDTOs[${stat.index}].text|" th:value="${printAdjust.text}" />
+							<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
+							<input type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" />
+						</th:block>
+						<th:block th:if="${printAdjust.title.equals('ticket_frame')}">
+							<legend th:text="${#strings.capitalizeWords(#strings.replace(printAdjust.title,'_',' '),' ')}"></legend>
+							<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
+							<input type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" />
+							<label th:for="${printAdjust.title + '_width'}">Width:</label>
+							<input type="number" step="0.01" th:id="${printAdjust.title + '_width'}" th:name="|printAdjustDTOs[${stat.index}].width|" th:value="${printAdjust.width}" />
+							<label th:for="${printAdjust.title + '_height'}">Height:</label>
+							<input type="number" step="0.01" th:id="${printAdjust.title + '_height'}" th:name="|printAdjustDTOs[${stat.index}].height|" th:value="${printAdjust.height}" />
+							<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
+							<input type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" />
+						</th:block>
+					</fieldset>
+					<!-- <a class="btn btn-primary mt-3" th:href="@{/print/generate-pdf}">Print</a> -->
+					<button class="btn btn-success mt-3" type="submit">Save Values</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

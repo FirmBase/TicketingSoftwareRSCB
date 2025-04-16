@@ -1,0 +1,37 @@
+<div th:fragment="toast">
+	<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		<div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+			<div class="toast-header d-flex align-items-center">
+				<strong class="me-auto">
+					<i class="fa-regular fa-envelope"></i>
+					<span id="toastHeader"></span>
+				</strong>
+				<small class="d-none">11 mins ago</small>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body text-success" id="toastBody"></div>
+		</div>
+	</div>
+	<script th:inline="javascript" type="text/javascript">
+		function showToast(header, body, status) {
+			$('#toastHeader').text(header);
+			$('#toastBody').text(body);
+			$(".toast").toast('show');
+			if (status) {
+				$("#toastBody").attr('class', 'toast-body text-success');
+			}
+			else {
+				$("#toastBody").attr('class', 'toast-body text-danger');
+			}
+		}
+
+		$(document).ready(function() {
+			/*<![CDATA[*/
+				const messageBody = JSON.parse(/*[[${message}]]*/);
+				if (messageBody != null) {
+					showToast('Message', messageBody.message, messageBody.status);
+				}
+			/*]]>*/
+		});
+	</script>
+</div>

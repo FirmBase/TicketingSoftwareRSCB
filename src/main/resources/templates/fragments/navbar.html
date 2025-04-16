@@ -1,0 +1,52 @@
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-dark border-bottom border-body py-3" data-bs-theme="dark">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="#">Regional Science Centre</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" ria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item"><a class="nav-link" aria-current="page" th:href="@{/home}">Home</a></li>
+				<li class="nav-item"><a class="nav-link" th:href="@{/recent-tickets/10}">Recent-Tickets</a></li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Manage</a>
+					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" th:href="@{/manage/serial}">Ticket Serial</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/tickets/add}">Ticket Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/groups/add}">Group / Combo Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/combo/add}">Combo Rate Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/rates}">Ticket Rate Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/users}">User Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/package/add}">Package Master</a></li>
+						<li><a class="dropdown-item" th:href="@{/manage/parking/add}">Parking Master</a></li>
+						<li><hr class="dropdown-divider" /></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/manage/logs/10}">Activity Logs</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/manage/logs/rates/10}">Rate Revision Logs</a></li>
+						<li><a class="dropdown-item disabled" href="#">See All Ticket & Group</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/manage/print/adjust}">Adjust ticket printing</a></li>
+						<li><hr class="dropdown-divider" /></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/home/summary}">Tickets Summary</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/report/daily}">Tickets Report</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/report/summary}">Tickets Report Summary</a></li>
+						<li><a class="dropdown-item" href="#" th:href="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}">[[${#dates.format(#dates.createNow(), 'yyyy')}]] report</a></li>
+					</ul>
+				</li>
+			</ul>
+			<form action="/logout" method="get" class="d-flex" role="search">
+				<button class="btn btn-danger" type="submit">Logout</button>
+			</form>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+			const url = $(location).attr('href').toUpperCase();
+			$('.nav-link').each(function() {
+				$(this).removeClass("active")
+				if (url.includes($(this).text().toUpperCase())) {
+					$(this).addClass("active");
+				}
+			});
+		});
+	</script>
+</nav>

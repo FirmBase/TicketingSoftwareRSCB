@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tickets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	th:href="@{/lib/css/GoogleFonts.css}"
+	rel="stylesheet">
+<link
+	th:href="@{/lib/css/bootstrap.min.css}"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+
+
+<script th:src="@{/lib/js/jquery-3.7.1.js}"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/c634b3cef4.js}"
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/dataTables.min.js}"
+	type="text/javascript"></script>
+<script
+	th:src="@{/lib/js/dataTables.bootstrap5.js}"
+	type="text/javascript"></script>
+<link
+	th:href="@{/lib/css/dataTables.bootstrap5.css}"
+	rel="stylesheet">
+<!-- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script> -->
+
+<script th:src="@{/lib/js/popper.min.js}" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/bootstrap.min.js}" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+	
+	
+<link th:href="@{/css/standard.css}" rel="stylesheet" />
+
+<style type="text/css">
+#billSummary {
+	width: 100%;
+	max-height: 62vh;
+	display: block;
+	overflow-y: auto;
+}
+
+td small {
+	font-size: 10px
+}
+.mw-250{
+max-width: 250px;
+}
+</style>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				const $checkboxes = $(document).find("input[type=checkbox][name=roles]");
+				$checkboxes.each(function() {
+					$(this).on("click", function() {
+						if (!$(this).prop("checked")) {
+							if ($checkboxes.filter(":checked").length < 1) {
+								$(this).prop("checked", true);
+								showToast("Insufficient groups", "At least one group must be selected.", false);
+							}
+						}
+					});
+				});
+			});
+		</script>
+		</script>
+</head>
+<body>
+
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+	<div th:replace="~{fragments/toast :: toast}"></div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 mt-3">
+				<form th:action="@{/manage/users/add}" method="post">
+					<div class="row g-2">
+						<div class="col-12">
+						<h2 class="m-0">Add Users</h2>
+						</div>
+						<div class="col-lg-3 col-md-3">
+							<div class="form-floating">
+								<input type="text" name="name" class="form-control"
+									id="name" placeholder="Name" value="" required>
+									<label for="name">Name</label>
+							</div>
+						</div>
+						<div class="col-lg-3 col-md-3">
+							<div class="form-floating">
+								<input type="text" name="username" class="form-control"
+									id="username" placeholder="Username" value="" required>
+									<label for="username">Username</label>
+							</div>
+						</div>
+						<div class="col-lg-3 col-md-3">
+							<div class="form-floating d-flex">
+								<input type="text" name="password" class="form-control"
+									id="password" placeholder="Password" value="" required>
+									<label for="password">Password</label>
+								<button class="btn d-none btn-danger ms-2 w-23">Show</button>
+							</div>
+						</div>
+						<div class="col-lg-3 col-lg-3 d-flex align-items-center">
+							<div class="btn-group" role="group"
+								aria-label="Basic checkbox toggle button group">
+								<th:block th:each="role : ${roles}">
+									<input type="checkbox" name="roles" class="btn-check"
+										th:value="${role.id}" th:id="${role.role}" autocomplete="off" checked>
+									<label class="btn btn-outline-primary" th:for="${role.role}"
+										th:text="${role.role}"></label>
+								</th:block>
+							</div>
+						</div>
+						<div class="col-lg-1 col-md-1 d-flex align-items-center">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-success">Save User</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			 <!-- ROLES -->
+			</div>
+			<div class="col-12 mt-3">
+			</div>
+			<div class="col-12 mt-3">
+			<h2>All Users <small style="font-size:12px" class="text-danger">(Root User can not be altered)</small></h2>
+				<table class="table table-striped border w-100" id="users">
+					<thead class="bg-gray">
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Username</th>
+							<th scope="col">Password</th>
+							<th scope="col">Added At</th>
+							<th scope="col">Roles</th>
+							<th scope="col">Status</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${users}">
+							<td scope="col">
+								<span th:text="${user.name}"></span><br>
+								<span th:if="${user.rootUser}" class="text-danger small">Root User</span>
+							</td>
+							<td scope="col" th:text="${user.username}"></td>
+							<td class="w-auto">
+								<form class="d-flex" th:action="@{/manage/users/password}" method="post">
+									<input type="hidden" name="username" th:value="${user.username}">
+									<input type="text" name="password" class="form-control mw-250" placeholder="New password" required>
+									<button class="btn btn-success ms-2">Change</button>
+								</form>
+							</td>
+							<td scope="col" th:text="${user.addedAt}"></td>
+							<td scope="col">
+								<!--
+								<th:block th:each="role : ${user.rolesDTO}">
+									<span th:text="${role.role}"></span>,&nbsp;
+								</th:block>
+								-->
+								<th:block th:each="role,stat : ${user.rolesDTO}">
+									[[${role.role}]]
+									<th:block th:if="${stat.index + 1 != user.rolesDTO.size}">,&nbsp;</th:block>
+								</th:block>
+							</td>
+							<td>
+								<span style="font-weight:bold" th:class="${user.isActive ? 'text-success' : 'text-danger'}" th:text="${user.isActive ? 'Active' : 'Inactive'}"></span>
+							</td>
+							<td scope="col">
+								<form th:action="@{/manage/users/status}" method="post">
+									<input type="hidden" name="username" th:value="${user.username}">
+									<button class="btn" th:classappend="${user.isActive ? 'btn-danger' : 'btn-success'}" th:text="${user.isActive ? 'Inactive' : 'Active'}"></button>							
+								</form>
+							</td>
+						</tr> 
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	$(document).ready(function() {
+	var tableConfig = {
+				info: true,
+				ordering: true,
+				paging: true,
+				searching: true,
+				responsive: true,
+				destroy: true
+			};
+		new DataTable('#users',tableConfig);
+	});
+</script>
+</html>

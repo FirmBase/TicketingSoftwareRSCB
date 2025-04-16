@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tickets Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	th:href="@{/lib/css/GoogleFonts.css}"
+	rel="stylesheet">
+<link
+	th:href="@{/lib/css/bootstrap.min.css}"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+
+<script th:src="@{/lib/js/jquery-3.7.1.js}"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/c634b3cef4.js}"
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/dataTables.min.js}"
+	type="text/javascript"></script>
+<script
+	th:src="@{/lib/js/dataTables.bootstrap5.js}"
+	type="text/javascript"></script>
+<link
+	th:href="@{/lib/css/dataTables.bootstrap5.css}"
+	rel="stylesheet">
+<!-- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script> -->
+
+<script
+	th:src="@{/lib/js/popper.min.js}"
+	integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{/lib/js/bootstrap.min.js}"
+	integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+	crossorigin="anonymous"></script>
+
+<link th:href="@{/css/standard.css}" rel="stylesheet" />
+
+<style type="text/css">
+#billSummary {
+	width: 100%;
+	max-height: 62vh;
+	display: block;
+	overflow-y: auto;
+}
+
+td small {
+	font-size: 10px
+}
+
+.mw-250 {
+	max-width: 250px;
+}
+</style>
+	<script th:inline="javascript" type="text/javascript">
+	</script>
+</head>
+<body>
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 mt-3">
+				<form th:action="@{/home/summary}" method="POST" enctype="application/x-www-form-urlencoded">
+					<div class="row g-2">
+						<div class="col-12">
+							<h2 class="m-0">Ticket Summary</h2>
+						</div>
+						<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<input type="date" id="startDate" name="startDate" class="form-control" th:value="${startDate}" required autofocus>
+								<label for="startDate">From Date</label>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}" required>
+								<label for="name">To Date</label>
+							</div>
+						</div>
+						<div class="col-lg-auto col-md-auto d-flex align-items-center">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-success">Search</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			<!-- ROLES -->
+			</div>
+			<div class="col-12 mt-3">
+				<!-- <h5 class="h5" th:text="${'Total ' + billRows.size}"></h5> -->
+				<table class="table table-striped border w-100" id="tickets">
+					<thead class="bg-gray">
+						<th scope="col" style="text-align: left;">Serial no.</th>
+						<th scope="col">Ticket</th>
+						<th scope="col">Visitor</th>
+						<th scope="col">Tickets count</th>
+						<th scope="col" style="text-align: right;">Total</th>
+					</thead>
+					<tbody>
+						<!-- //Interim check report -->
+						<tr th:each="billRow,stat : ${billRows}">
+							<td scope="col" th:text="${stat.index + 1}" style="text-align: left;"></td>
+							<td scope="col" th:text="${billRow.ticketName}"></td>
+							<td scope="col" th:text="${billRow.groupName}"></td>
+							<td scope="col" th:text="${billRow.count}"></td>
+							<td scope="col" th:text="${billRow.total}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-12 mt-3 d-flex" style="justify-content: end;align-items: center;">
+				<div>
+					<h4 th:text="${'Tickets sold: ' + grandCount}" class="h4"></h4>
+					<h4 th:text="${'Grand Total: ' + grandTotal}" class="h4"></h4>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var tableConfig = {
+				"aaSorting" : [], //Default sorting false
+				info : true,
+				ordering : true,
+				paging : true,
+				searching : true,
+				responsive : false,
+				destroy : false
+			};
+			new DataTable('#tickets', tableConfig);
+		});
+	</script>
+</body>
+</html>

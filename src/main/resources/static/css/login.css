@@ -1,0 +1,32 @@
+.main-block{
+   height: 100vh;
+}
+
+.login-form{
+    padding: 20px;
+}
+
+.login-form input[type="text"],.login-form input[type="password"]{
+  font-weight: 500;
+  /* margin-bottom: 10px; */
+  padding: 12px;
+  font-size: 14px;
+}
+.form-check{
+    margin-bottom: 6px;
+}
+.form-check label{
+    cursor: pointer;
+}
+.login-form .btn{
+    padding: 12px;
+}
+
+.footer{
+   position: absolute;
+   bottom:5px;
+   left:25px ;    
+}
+.input-group-text {
+    cursor: pointer;
+}

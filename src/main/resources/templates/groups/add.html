@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Groups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	th:href="@{/lib/css/GoogleFonts.css}"
+	rel="stylesheet">
+<link
+	th:href="@{/lib/css/bootstrap.min.css}"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+
+
+<script th:src="@{/lib/js/jquery-3.7.1.js}"
+	integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/c634b3cef4.js}"
+	crossorigin="anonymous"></script>
+<script th:src="@{/lib/js/dataTables.min.js}"
+	type="text/javascript"></script>
+<script
+	th:src="@{/lib/js/dataTables.bootstrap5.js}"
+	type="text/javascript"></script>
+<link
+	th:href="@{/lib/css/dataTables.bootstrap5.css}"
+	rel="stylesheet">
+<!-- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script> -->
+
+<script
+	th:src="@{/lib/js/popper.min.js}"
+	integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+	crossorigin="anonymous"></script>
+<script
+	th:src="@{/lib/js/bootstrap.min.js}"
+	integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+	crossorigin="anonymous"></script>
+<link th:href="@{/css/standard.css}" rel="stylesheet" />
+<style type="text/css">
+#billSummary {
+	width: 100%;
+	max-height: 62vh;
+	display: block;
+	overflow-y: auto;
+}
+
+td small {
+	font-size: 10px
+}
+
+.mw-250 {
+	max-width: 250px;
+}
+</style>
+</head>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(document).find("select[name=groupType]").on("change", function(){
+					if ($(this).val() == "SINGLE") {
+						$(document).find("input[name=minMembers]").prop("disabled", false);
+						$(document).find("input[name=fixedMembers]").prop("disabled", true);
+						$(document).find("input[name=minMembers]").val("");
+						$(document).find("input[name=fixedMembers]").val(0);
+					}
+					else if ($(this).val() == "COMBO") {
+						$(document).find("input[name=minMembers]").prop("disabled", true);
+						$(document).find("input[name=fixedMembers]").prop("disabled", false);
+						$(document).find("input[name=minMembers]").val(0);
+						$(document).find("input[name=fixedMembers]").val("");
+					}
+				});
+			});
+		</script>
+<body>
+
+	<div th:replace="fragments/navbar::navbar"></div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 mt-3">
+				<form th:action="@{/manage/groups/add}" method="post">
+					<div class="row g-2">
+						<div class="col-12">
+							<h2 class="m-0">Add Groups</h2>
+						</div>
+						<div class="col-lg-3 col-md-3">
+							<div class="form-floating">
+								<input type="text" name="name" class="form-control" id="name"
+									placeholder="Name" value="" required autofocus>
+								<label for="name">Group Name</label>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<select class="form-select" id="floatingSelect" name="category"
+									aria-label="Floating label select example" required>
+									<option value="">Please Select Category</option>
+									<th:block th:each="type : ${T(com.rsc.bhopal.enums.VisitorsCategoryEnum).values()}">
+										<option th:value="${type.name}" th:text="${type.name}"></option>
+									</th:block>
+								</select>
+								<label for="floatingSelect">Category</label>
+							</div>
+						</div>
+							<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<select class="form-select" id="floatingSelect" name="groupType"
+									aria-label="Floating label select example" required>
+									<option  value="">Please Select Type</option>
+									<th:block th:each="groupType : ${T(com.rsc.bhopal.enums.GroupType).values()}">
+										<option th:value="${groupType.name}" th:text="${groupType.name}"></option>
+									</th:block>
+								</select>
+								<label for="floatingSelect">Type</label>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<input type="number" name="minMembers" class="form-control"
+									id="minMembers" placeholder="" value="" min="0" required>
+								<label for="minMembers">Min Members</label>
+							</div>
+						</div>
+						<div class="col-lg-2 col-md-2">
+							<div class="form-floating">
+								<input type="number" name="fixedMembers" class="form-control"
+									id="fixedMembers" placeholder="" value="" min="0" required>
+								<label for="fixedMembers">Fixed Members</label>
+							</div>
+						</div>					
+						<div class="col-lg-12 col-md-12 d-flex  align-items-center">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-success">Save Group</button>
+							</div>
+						</div>
+					</div>
+				</form>
+				<!-- ROLES -->
+			</div>
+			<div class="col-12 mt-3">
+				<h2>
+					All Groups
+				</h2>
+				<table class="table table-striped border w-100" id="groups">
+					<thead class="bg-gray">
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Category</th>
+							<th scope="col">Type</th>
+							<th scope="col">Min Members</th>
+							<th scope="col">Fixed Members</th>
+							<th scope="col">Added At</th>
+							<th scope="col">Added By</th>
+							<th scope="col">Action</th>
+							<th scope="col">Set As Default</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="visitor : ${visitors}">
+							<td scope="col" th:text="${visitor.name}"></td>
+							<td scope="col" th:text="${visitor.category}"></td>							
+							<td scope="col" th:text="${visitor.groupType}"></td>							
+							<td scope="col" th:text="${visitor.minMembers}"></td>
+							<td scope="col" th:text="${visitor.fixedMembers}"></td>
+							<td scope="col" th:text="${visitor.addedAt}"></td>
+							<td scope="col" th:text="${visitor.addedBy}"></td>		
+							<td scope="col" >
+							<form th:action="@{/manage/groups/status}" method="post">
+							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
+							    <button class="btn " th:classappend="${visitor.isActive?'btn-danger':'btn-success'}" th:text="${visitor.isActive?'Inactive':'Active'}"></button>							
+							</form>	
+							</td>
+							<td scope="col" >
+							<form th:action="@{/manage/groups/make-default}" method="post">
+							    <input type="hidden" name="vistiorId" th:value="${visitor.id}">
+							    <button class="btn" 
+							    	th:classappend="${visitor.isDefault?'btn-warning disabled':'btn-success'}" 
+							    	th:text="${visitor.isDefault?'Default':'Set As Default'}" th:disabled="${visitor.groupType == GroupType.COMBO}"></button>
+							</form>	
+							</td>												
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	$(document).ready(function() {
+		var tableConfig = {
+			info : true,
+			ordering : true,
+			paging : true,
+			searching : true,
+			responsive : true,
+			destroy : true
+		};
+		new DataTable('#groups', tableConfig);
+	});
+</script>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Packages</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link th:href="@{/lib/css/GoogleFonts.css}"
+			rel="stylesheet">
+		<link th:href="@{/lib/css/bootstrap.min.css}"
+			rel="stylesheet"
+			integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+			crossorigin="anonymous">
+
+		<script th:src="@{/lib/js/jquery-3.7.1.js}"
+			integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+			crossorigin="anonymous"></script>
+		<script th:src="@{/lib/js/c634b3cef4.js}"
+			crossorigin="anonymous"></script>
+		<script th:src="@{/lib/js/dataTables.min.js}"
+			type="text/javascript"></script>
+		<script
+			th:src="@{/lib/js/dataTables.bootstrap5.js}"
+			type="text/javascript"></script>
+		<link
+			th:href="@{/lib/css/dataTables.bootstrap5.css}"
+			rel="stylesheet">
+		<!-- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script> -->
+
+		<script
+			th:src="@{/lib/js/popper.min.js}"
+			integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+			crossorigin="anonymous"></script>
+		<script
+			th:src="@{/lib/js/bootstrap.min.js}"
+			integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+			crossorigin="anonymous"></script>
+
+		<link th:href="@{/css/standard.css}" rel="stylesheet" />
+
+		<style type="text/css">
+			#billSummary {
+				width: 100%;
+				max-height: 62vh;
+				display: block;
+				overflow-y: auto;
+			}
+			td small {
+				font-size: 10px
+			}
+			.mw-250 {
+				max-width: 250px;
+			}
+		</style>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				const $checkboxes = $(document).find("input[type=checkbox]");
+				$checkboxes.each(function() {
+					$(this).on("click", function() {
+						if (!$(this).prop("checked")) {
+							if ($checkboxes.filter(":checked").length < 1) {
+								$(this).prop("checked", true);
+								showToast("Insufficient groups", "At least one group must be selected.", false);
+							}
+						}
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div th:replace="~{fragments/navbar :: navbar}"></div>
+		<div th:replace="~{fragments/toast :: toast}"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12 mt-3">
+					<form th:action="@{/manage/package/add}" method="POST" enctype="application/x-www-form-urlencoded">
+						<div class="row g-2">
+							<div class="col-12">
+								<h2 class="m-0">Add packages</h2>
+							</div>
+							<div class="col-lg-3 col-md-3">
+								<div class="form-floating mb-3">
+									<input type="text" class="form-control" id="receiptNo" name="receiptNo" placeholder="Receipt no." required autofocus />
+									<label for="receiptNo">Receipt no.</label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3">
+								<div class="form-floating mb-3">
+									<input type="text" class="form-control" id="name" name="name" placeholder="Name" required />
+									<label for="name">Name</label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3">
+								<div class="form-floating mb-3">
+									<input type="number" class="form-control" id="price" name="price" placeholder="Price" required />
+									<label for="price">Price</label>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-3">
+								<div class="form-floating mb-3">
+									<input type="date" class="form-control" id="date" name="billDate" value="" placeholder="Date" required />
+									<label for="date">Date</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="btn-group mb-2" role="group" aria-label="Basic checkbox toggle button group" autocomplete="off">
+								<th:block th:each="group,stat : ${groups}">
+									<input type="checkbox" class="btn-check" th:name="|visitorsType[${stat.index}].id|" th:id="${'group' + group.id}" th:value="${group.id}" autocomplete="off" checked />
+									<label class="btn btn-outline-primary" th:for="${'group' + group.id}" th:text="${group.name}"></label>
+								</th:block>
+							</div>
+						</div>
+						<div class="col-lg-12 col-md-12 d-flex">
+							<div class="btn-group">
+								<button type="submit" class="btn btn-success">Submit</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-12 mt-3">
+					<h2 class="h2">Packages</h2>
+					<table class="table table-striped border w-100" id="tickets">
+						<thead class="bg-gray">
+							<tr>
+								<th scope="col" style="text-align: left;">Receipt no.</th>
+								<th scope="col">Package name</th>
+								<th scope="col">Price</th>
+								<th scope="col">Bill date</th>
+								<th scope="col" style="text-align: right;">Added By</th>
+								<th scope="col" style="text-align: right;">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="package : ${packages}">
+								<td scope="col" th:text="${package.receiptNo}" style="text-align: left;"></td>
+								<td scope="col" th:text="${package.name}"></td>
+								<td scope="col" th:text="${package.price}"></td>
+								<td scope="col" th:text="${package.billDate}"></td>
+								<td scope="col" th:text="${package.addedBy}" style="text-align: right;"></td>
+								<td scope="col" style="text-align: right;">
+									<form th:action="@{/manage/package/toggle}" method="POST" enctype="application/x-www-form-urlencoded">
+										<input type="hidden" name="packageId" th:value="${package.id}" />
+										<input th:if="${package.isActive}" type="submit" class="btn btn-danger" value="Inactive" />
+										<input th:if="${!package.isActive}" type="submit" class="btn btn-success" value="Active" />
+									</form>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var tableConfig = {
+					info : true,
+					ordering : true,
+					paging : true,
+					searching : true,
+					responsive : true,
+					destroy : true
+				};
+				new DataTable('#tickets', tableConfig);
+			});
+		</script>
+	</body>
+</html>

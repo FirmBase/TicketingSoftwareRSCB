@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Ticket</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link th:href="@{/lib/css/GoogleFonts.css}" rel="stylesheet" />
+		<link th:href="@{/lib/css/bootstrap.min.css}" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+		<link th:href="@{/css/standard.css}" rel="stylesheet" />
+		<script th:src="@{/lib/js/jquery-3.7.1.js}" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+		<script th:src="@{/lib/js/c634b3cef4.js}" crossorigin="anonymous"></script>
+
+		<script th:src="@{/lib/js/popper.min.js}" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+		<script th:src="@{/lib/js/bootstrap.min.js}" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+		<style type="text/css">
+			#billSummary {
+				width: 100%;
+				max-height: 62vh;
+				display: block;
+				overflow-y: auto;
+			}
+			td small {
+				font-size: 10px
+			}
+		</style>
+
+		<script type="text/javascript">
+			function sendUpdate($field) {
+				const priceUpdate = $field.find("input[type=number][name=price]").val();
+				$.ajax({
+					url: $field.attr("action"),
+					method: $field.attr("method"),
+					data: $field.serialize(),
+					processData: false,
+					contentType: "application/x-www-form-urlencoded",
+					dataType: "json",
+					success: function(response) {
+						if (response.status) {
+							showToast("Success message from Rate Master", response.message, true);
+							$field.find("input[type=hidden][name=actualPrice]").val(priceUpdate);
+						}
+						else {
+							showToast("Failure message from Rate Master", response.message, false);
+						}
+					},
+					error: function(xhr, status, error) {
+						showToast("Error", "Some Internal Error Occurred!!", false);
+					}
+				});
+			}
+			$(document).ready(function() {
+				$(document).find("form").on("submit", function() {
+					const previousPrice = parseFloat($(this).find("input[name=actualPrice]").val());
+					const price = parseFloat($(this).find("input[name=price]").val());
+					if (previousPrice == price) {
+						showToast("Check price field!", "Price is unchanged", false);
+					}
+					else {
+						sendUpdate($(this));
+					}
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div th:replace="fragments/navbar::navbar"></div>
+
+    	<div th:replace="fragments/toast::toast"></div>
+<div class="container-fluid">
+		<div class="row g-2">
+			<div class="col-12 mt-3">
+				<h2 class="m-0">Manage Rate Master</h2>
+			</div>
+			<div class="col-12">
+				<div style="overflow-x:scroll">
+				 <table class="table table-striped border w-100">
+					<thead class="bg-gray">
+						<tr>
+							<th scope="col">Ticket</th>
+							<th scope="col" th:each="ticket, index : ${ticketRates.groups}">
+								<span th:text="${ticket}"></span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="ticket : ${ticketRates.ticketRates}">
+							<td scope="col" th:text="${ticket.ticketName}"></td>
+							<th:block th:each="price : ${ticket.prices}">
+								<td>
+									<form method="POST" action="/manage/rates/update" class="d-flex">
+										<input type="hidden" name="ticketId" placeholder="Ticket ID"
+											th:value="${ticket.ticketId}" />
+										<input type="hidden"
+											name="groupId" placeholder="Group ID" th:value="${price.key}" />
+											<input class="form-control" type="hidden" name="actualPrice" step="0.01" disabled
+												placeholder="Initial price" th:value="${price.value}" />
+											<input th:if="${price.value != null}" class="form-control" type="number" name="price" min="0" step="0.01"
+												placeholder="Rate" th:value="${price.value}" />
+											<input th:if="${price.value == null}" class="form-control" type="number" name="price" min="0" step="0.01"
+												placeholder="Enter rate" value="" required />
+										<button type="submit" class="btn btn-outline-secondary ms-1">
+											<i class="fa-solid fa-check-double"></i>
+										</button>
+									</form>
+								</td>
+							</th:block>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+			<div class="col-1 mt-3">
+				<button class="btn btn-primary" onclick="window.location.reload();">Refresh rates</button>
+			</div>
+		</div>
+		</div>	
+	</body>
+
+</html>
