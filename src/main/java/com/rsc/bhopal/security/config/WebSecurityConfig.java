@@ -31,7 +31,7 @@ public class WebSecurityConfig {
 					.contentTypeOptions()
 				)
 				.authorizeHttpRequests(requests -> requests
-					.requestMatchers("/js/**", "/css/**","/images/**", "/lib/js/**", "/lib/css/**", "/lib/fonts/**").permitAll()
+					.requestMatchers("/js/**", "/css/**","/images/**", "/lib/js/**", "/lib/css/**", "/lib/fonts/**", "/font-awesome/**").permitAll()
 					.requestMatchers("/manage/**")
 					.hasRole("ADMIN")
 				)
