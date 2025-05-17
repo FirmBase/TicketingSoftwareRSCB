@@ -2,6 +2,7 @@ package com.rsc.bhopal.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,74 @@ public class ApplicationConstantService {
 		}
 	}
 
+	public ApplicationConstantDTO getBillSeries() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSeries().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	public void replaceBillSeries(long id, String billSeries) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSeries);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerialStart() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerialStart().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	public void replaceBillSerialStart(long id, String billSerialStart) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerialStart);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerialEnd() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerialEnd().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	public void replaceBillSerialEnd(long id, String billSerialEnd) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerialEnd);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerial() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerial().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	public void replaceBillSerial(long id, String billSerial) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerial);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
 	public List<PrintAdjustDTO> getAllCurrentPrintCoordinate() {
 		List<PrintAdjustDTO> printAdjustDTOs = new ArrayList<PrintAdjustDTO>();
 		applicationConstantRepository.getAllCurrentPrintCoordinates().forEach(applicationConstant -> {
@@ -91,5 +160,18 @@ public class ApplicationConstantService {
 				log.debug("Exception converting " + printAdjustDTO + " to JSON: " + ex.getMessage());
 			}
 		});
+	}
+
+	public boolean checkBillSerialInRange() {
+		boolean status = false;
+		try {
+			status = (new BigInteger(getBillSerialStart().getData()).compareTo(new BigInteger(getBillSerial().getData())) != 1)
+				&&
+				(new BigInteger(getBillSerialEnd().getData()).compareTo(new BigInteger(getBillSerial().getData())) != -1);
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return status;
 	}
 }

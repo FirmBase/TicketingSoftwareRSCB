@@ -1,11 +1,13 @@
 package com.rsc.bhopal.utills;
 
+import com.itextpdf.text.Rectangle;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
-import com.itextpdf.text.Rectangle;
-// import com.itextpdf.awt.geom.Rectangle;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -15,16 +17,113 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.rsc.bhopal.dtos.BillSummarize;
+import com.rsc.bhopal.dtos.PrintAdjustDTO;
+import com.rsc.bhopal.dtos.TicketBillDTO;
+import com.rsc.bhopal.utills.PDFGenerateObject;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PDFGenerate {
+	private final int PPI = 72;
+	private final int FLOATING_FONT_SIZE = 10;
+
+	public PDFGenerate(final List<PrintAdjustDTO> printAdjustDTOs, final TicketBillDTO ticketBillDTO, final HttpServletResponse httpServletResponse) {
+		httpServletResponse.setContentType("application/pdf");
+		httpServletResponse.setHeader("Content-Disposition", "inline; filename=document.pdf");
+
+		// final BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBillDTO.getTicketPayload(), BillSummarize.class);
+		final BillSummarize billSummarize = ticketBillDTO.getBillSummarize();
+		log.debug("Bill Summarize for printing: " + billSummarize);
+
+		PDFGenerateObject pdfGenerate = null;
+		float frame_width = 0, frame_height = 0;
+
+		for (final PrintAdjustDTO printAdjustDTO: printAdjustDTOs) {
+			if (printAdjustDTO.getTitle().endsWith("frame")) {
+				frame_width = printAdjustDTO.getWidth();
+				frame_height = printAdjustDTO.getHeight();
+				pdfGenerate = new PDFGenerateObject(centimetersToPixels(printAdjustDTO.getWidth()), centimetersToPixels(printAdjustDTO.getHeight()));
+				pdfGenerate.open(httpServletResponse);
+			}
+			else if (printAdjustDTO.getTitle().endsWith("serial")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText(billSummarize.getTicketSerial().toString(), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("serial")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText(billSummarize.getTicketSerial().toString(), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("category")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					// pdfGenerate.addFloatingText(billSummarize.getTicketSerial().toString(), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("person_count")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText(String.valueOf(ticketBillDTO.getPersons()), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("per_person")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText("Rs. " + ticketBillDTO.getTotalBill() / ticketBillDTO.getPersons(), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("total_amount")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText("Rs. " + ticketBillDTO.getTotalBill(), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("date")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText(String.valueOf(new SimpleDateFormat("dd, MMM yy").format(ticketBillDTO.getGeneratedAt())), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+			else if (printAdjustDTO.getTitle().endsWith("time")) {
+				final int y = Math.round(centimetersToPixels(frame_height - printAdjustDTO.getTop()));
+				final int x = Math.round(centimetersToPixels(printAdjustDTO.getLeft()));
+				if (pdfGenerate != null) {
+					pdfGenerate.addFloatingText(String.valueOf(new SimpleDateFormat("hh:mm a").format(ticketBillDTO.getGeneratedAt())), FLOATING_FONT_SIZE, x, y);
+				}
+			}
+		}
+
+		billSummarize.getBillDescription().forEach(billDescription -> {});
+
+		if (pdfGenerate != null) {
+			pdfGenerate.close();
+		}
+	}
+
+	public float centimetersToPixels(float cm) {
+		return cm * this.PPI / 2.54f;
+	}
+}
+
+@Slf4j
+class PDFGenerateObject {
 	private Document document;
 	private PdfWriter pdfWriter;
 
-	public PDFGenerate(final float width, final float height) {
+	public PDFGenerateObject(final float width, final float height) {
 		document = new Document(new Rectangle(width, height));
 	}
 
@@ -78,34 +177,6 @@ public class PDFGenerate {
 		catch(DocumentException | IOException ex) {
 			log.debug("Error adding floating text: " + ex.getMessage());
 		}
-	}
-
-	public static void main(String[] args) {
-		PDFGenerate pdfGenerate = new PDFGenerate(355, 210);
-		final short left_margin = 50;
-		pdfGenerate.open("iTextPDF.pdf");
-		// pdfGenerate.addTextChunk("Hello World!", 16);
-		pdfGenerate.addFloatingText("Ticket Serial:", 10, left_margin, 130);
-		pdfGenerate.addFloatingText("29987", 10, left_margin + 70, 130);
-
-		pdfGenerate.addFloatingText("Category:", 10, left_margin, 102);
-		pdfGenerate.addFloatingText("Others", 10, left_margin + 70, 102);
-
-		pdfGenerate.addFloatingText("Person Count:", 10, left_margin, 88);
-		pdfGenerate.addFloatingText("8", 10, left_margin + 70, 88);
-
-		pdfGenerate.addFloatingText("Rate:", 10, left_margin, 72);
-		pdfGenerate.addFloatingText("", 10, left_margin + 70, 72);
-
-		pdfGenerate.addFloatingText("Total amount:", 10, left_margin, 56);
-		pdfGenerate.addFloatingText("Rs. 0", 10, left_margin + 70, 56);
-
-		pdfGenerate.addFloatingText("Date:", 10, 200, 130);
-		pdfGenerate.addFloatingText("19, Jul 24", 10, 230, 130);
-
-		pdfGenerate.addFloatingText("Time:", 10, 200, 114);
-		pdfGenerate.addFloatingText("09:14 AM", 10, 230, 114);
-		pdfGenerate.close();
 	}
 
 	public void close() {

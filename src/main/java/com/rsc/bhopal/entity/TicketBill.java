@@ -19,13 +19,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "RSC_TS_TICKET_BILL")
+@Table(name = "RSC_TS_TICKET_BILL", uniqueConstraints = {
+	@UniqueConstraint(columnNames = {"BILL_SERIES", "BILL_SERIAL"})
+})
 public class TicketBill {
-
 	@Id
 	@Column(name = "ID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +55,12 @@ public class TicketBill {
 	@Column(name = "TICKET_SERIAL")
 	private BigInteger ticketSerial;
 
+	@Column(name = "BILL_SERIES", nullable = false)
+	private Character series;
+
+	@Column(name = "BILL_SERIAL", nullable = false)
+	private BigInteger serialNo;
+
 	@Column(name = "CANCELLED_STATUS")
 	private Boolean cancelledStatus;
 
@@ -64,12 +72,6 @@ public class TicketBill {
 	@OneToMany(mappedBy = "generatedTicket", fetch = FetchType.LAZY)
 	@Cascade(CascadeType.ALL)
 	List<TicketBillRow> billSummary;
-
-/*
-	@ManyToOne(fetch = FetchType.EARLY)
-	@JoinColumn(name = "SERIAL_ID", referencedColumnName = "ID")
-	private ApplicationConstant applicationConstant;
-*/
 
 	@Override
 	public String toString() {

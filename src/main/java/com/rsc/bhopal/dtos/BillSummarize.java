@@ -12,7 +12,7 @@ public class BillSummarize {
 	private List<ParkingBillDescription> parkingBillDescription;
 	private boolean comboCase;
 	private BigInteger ticketSerial;
-	// private Long ticketSerial;
-	// private long ticketSerial;
+	private Character billSeries;
+	private BigInteger billSerial;
 	private boolean cancelledStatus;
 }

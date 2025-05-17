@@ -26,8 +26,10 @@ public class TicktingSoftwareRscbApplication {
 	@Bean
 	CommandLineRunner runner() {
 		return runner -> {
-			log.debug("Ticket serial: " + applicationConstantService.getTicketSerial());
-			// log.debug("Print ticket fields coordinates: " + applicationConstantService.getAllCurrentPrintCoordinate());
+			log.debug("Ticket serial: " + applicationConstantService.getTicketSerial().getData());
+			log.debug("Bill series: " + applicationConstantService.getBillSeries().getData());
+			log.debug("Bill serial range start: " + applicationConstantService.getBillSerialStart().getData());
+			log.debug("Bill serial range end: " + applicationConstantService.getBillSerialEnd().getData());
 		};
 	}
 }
