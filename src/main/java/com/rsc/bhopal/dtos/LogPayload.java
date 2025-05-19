@@ -1,6 +1,5 @@
 package com.rsc.bhopal.dtos;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data

@@ -17,7 +17,6 @@ import com.rsc.bhopal.repos.UserDetailsRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
 	@Autowired
 	private PasswordEncoder encoder;
 
@@ -27,25 +26,23 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<RSCUser> user = userRepo.findByUsernameAndIsActive(username,true);
-		UserDetails userDetails = null;
-		if (user.isPresent()) {
+	Optional<RSCUser> user = userRepo.findByUsernameAndIsActive(username, true);
+	UserDetails userDetails = null;
+	if (user.isPresent()) {
 
-			List<String> roles = user.get().getRoles().stream().map(role -> role.getRole().toString().toUpperCase())
-					.collect(Collectors.toList());
-			
-			
-			userDetails = User.withUsername(user.get()
-					                            .getUsername())
-					                            .password(user.get().getPassword())
-					                            .roles(roles.toArray(new String[roles.size()]))
-					                            .build();
+		List<String> roles = user.get().getRoles().stream().map(role -> role.getRole().toString().toUpperCase())
+				.collect(Collectors.toList());
 
-		} else {
-			throw new UsernameNotFoundException("User is not Present in the DB");
+		userDetails = User.withUsername(user.get()
+				.getUsername())
+				.password(user.get().getPassword())
+				.roles(roles.toArray(new String[roles.size()]))
+				.build();
+
+		}
+		else {
+			throw new UsernameNotFoundException("User not present in system");
 		}
 		return userDetails;
-
 	}
-
 }

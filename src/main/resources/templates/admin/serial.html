@@ -167,83 +167,83 @@
 								<thead>
 									<th></th>
 									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th></th>
 								</thead>
 								<tbody>
 									<tr>
 										<td>
 											<label for="bill_serial_id"></label>
-										</td>
-										<td>
 											<input class="form-control" id="bill_serial_id" type="hidden" name="bill-serial-id" th:value="${bill_serial_id}" />
 										</td>
+										<td></td>
+									</tr>
+									<tr>
 										<td>
-											<label for="previous_bill_serial">Current:</label>
+											<div class="form-floating">
+												<label for="previous_bill_serial">Current:</label>
+												<input class="form-control text-end" id="previous_bill_serial" type="number" name="previous-bill-serial" th:value="${bill_serial}" readonly />
+											</div>
 										</td>
 										<td>
-											<input class="form-control" id="previous_bill_serial" type="number" name="previous-bill-serial" th:value="${bill_serial}" readonly />
-										</td>
-										<td>
-											<label for="bill_serial_input">New:</label>
-										</td>
-										<td>
-											<input class="form-control" id="bill_serial_input" type="number" name="bill-serial" placeholder="Current serial" value="" />
+											<div class="form-floating">
+												<label for="bill_serial_input">New:</label>
+												<input class="form-control text-end" id="bill_serial_input" type="number" name="bill-serial" placeholder="Current serial" value="" />
+											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<label for="bill_serial_start_id"></label>
+											<div class="form-floating">
+												<label for="bill_serial_start_id"></label>
+												<input class="form-control text-end" id="bill_serial_start_id" type="hidden" name="bill-serial-start-id" th:value="${bill_serial_start_id}" />
+											</div>
+										</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-floating">
+												<label for="previous_bill_serial_start">Start:</label>
+												<input class="form-control text-end" id="previous_bill_serial_start" type="number" name="previous-bill-serial-start" th:value="${bill_serial_start}" readonly />
+											</div>
 										</td>
 										<td>
-											<input class="form-control" id="bill_serial_start_id" type="hidden" name="bill-serial-start-id" th:value="${bill_serial_start_id}" />
-										</td>
-										<td>
-											<label for="previous_bill_serial_start">Start:</label>
-										</td>
-										<td>
-											<input class="form-control" id="previous_bill_serial_start" type="number" name="previous-bill-serial-start" th:value="${bill_serial_start}" readonly />
-										</td>
-										<td>
-											<label for="bill_serial_start_input">New:</label>
-										</td>
-										<td>
-											<input class="form-control" id="bill_serial_start_input" type="number" name="bill-serial-start" placeholder="Start serial" value="" />
+											<div class="form-floating">
+												<label for="bill_serial_start_input">New:</label>
+												<input class="form-control text-end" id="bill_serial_start_input" type="number" name="bill-serial-start" placeholder="Start serial" value="" />
+											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<label for="bill_serial_end_id"></label>
+											<div class="form-floating">
+												<label for="bill_serial_end_id"></label>
+												<input class="form-control text-end" id="bill_serial_end_id" type="hidden" name="bill-serial-end-id" th:value="${bill_serial_end_id}" />
+											</div>
+										</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-floating">
+												<label for="bill_serial_end">End:</label>
+												<input class="form-control text-end" id="bill_serial_end" type="number" name="previous-bill-serial-end" th:value="${bill_serial_end}" readonly />
+											</div>
 										</td>
 										<td>
-											<input class="form-control" id="bill_serial_end_id" type="hidden" name="bill-serial-end-id" th:value="${bill_serial_end_id}" />
-										</td>
-										<td>
-											<label for="bill_serial_end">End:</label>
-										</td>
-										<td>
-											<input class="form-control" id="bill_serial_end" type="number" name="previous-bill-serial-end" th:value="${bill_serial_end}" readonly />
-										</td>
-										<td>
-											<label for="bill_serial_end_input">New:</label>
-										</td>
-										<td>
-											<input class="form-control" id="bill_serial_end_input" type="number" name="bill-serial-end" placeholder="End serial" value="" />
+											<div class="form-floating">
+												<label for="bill_serial_end_input">New:</label>
+												<input class="form-control text-end" id="bill_serial_end_input" type="number" name="bill-serial-end" placeholder="End serial" value="" />
+											</div>
 										</td>
 									</tr>
 									<tr>
-										<td></td>
-										<td></td>
 										<td>
-											<label for="bill_serial_button">Action:</label>
+											<div class="form-floating">
+												<label for="bill_serial_button"></label>
+												<button class="btn btn-primary btn-lg" id="bill_serial_button" type="submit">Change</button>
+											</div>
 										</td>
 										<td></td>
-										<td></td>
-										<td>
-											<button class="btn btn-primary" id="bill_serial_button" type="submit">Change</button>
-										</td>
 									</tr>
 								</tbody>
 							</table>
