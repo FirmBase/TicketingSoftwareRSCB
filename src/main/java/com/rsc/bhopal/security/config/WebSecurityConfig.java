@@ -31,7 +31,7 @@ public class WebSecurityConfig {
 					// .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self';"))
 				)
 				.authorizeHttpRequests(requests -> requests
-					.requestMatchers("/js/**", "/css/**","/images/**", "/lib/js/**", "/lib/css/**", "/lib/fonts/**", "/fonts/**", "/font-awesome/**")
+					.requestMatchers("/js/**", "/css/**", "/images/**", "/icons/**", "/lib/js/**", "/lib/css/**", "/fonts/**", "/font-awesome/**")
 					.permitAll()
 				)
 				.authorizeHttpRequests(requests -> requests
