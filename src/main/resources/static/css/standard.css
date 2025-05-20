@@ -1,125 +1,150 @@
-body,*{
-    font-family: "Montserrat", sans-serif;
-    /* font-family: "Righteous", sans-serif; */
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
-    font-size: 12px;
+body, * {
+	font-family: "Montserrat", sans-serif;
+	/* font-family: "Righteous", sans-serif; */
+	font-optical-sizing: auto;
+	font-weight: 500;
+	font-style: normal;
+	font-size: 12px;
 }
-.navbar{
-    position: sticky;
-    top: 0px;
-    z-index: 1000;
+
+.navbar {
+	position: sticky;
+	top: 0px;
+	z-index: 1000;
 }
-.right-box{
-    position: fixed;
-    /* top: 65px; */
-    width: 32%;
+
+.right-box {
+	position: fixed;
+	/* top: 65px; */
+	width: 32%;
 }
-.btn{
-    font-size: 12px;
-    font-weight: 600 !important; 
+
+.btn {
+	font-size: 12px;
+	font-weight: 600 !important; 
 }
-.box{
-/*  margin-top: 10px; */
-  padding: 10px;
- /*  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+
+.box {
+	/* margin-top: 10px; */
+	padding: 10px;
+	/* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
-.table,th,td,span{
-    vertical-align: middle; 
-    font-weight: 600 !important; 
+
+.table, th, td, span {
+	vertical-align: middle; 
+	font-weight: 600 !important; 
 }
+
 .bg-gray {
-    background-color: #ededed !important;
+	background-color: #ededed !important;
 }
+
+/*
 thead {
-    /* border: 0px solid black !important; */
+	border: 0px solid black !important;
 }
-th{
-    background-color: unset !important;   
+*/
+
+th {
+	background-color: unset !important;   
 }
-.btn-group{
-    overflow: auto;
+
+.btn-group {
+	overflow: auto;
 }
-.btn-group .btn{
+
+.btn-group .btn {
   padding: 10px 15px 10px 15px;
   text-align: center;
   vertical-align: middle;
 }
-.form-container h5{
-    margin-bottom: 5px;
+
+.form-container h5 {
+	margin-bottom: 5px;
 }
-.form-container{
-    margin-bottom: 20px;
+
+.form-container {
+	margin-bottom: 20px;
 }
-.input-count{
-    margin-left: 8px;
-    margin-right: 8px;
-    padding: 4px;
-    font-size: 12px;
-    width: 60px;
-    text-align: center;
+
+.input-count {
+	margin-left: 8px;
+	margin-right: 8px;
+	padding: 4px;
+	font-size: 12px;
+	width: 60px;
+	text-align: center;
 }
-.count{
-    padding: 5px 10px 5px 10px;
-    vertical-align: middle;
+
+.count {
+	padding: 5px 10px 5px 10px;
+	vertical-align: middle;
 }
+
 /*Remove Arrows/Spinners Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 
-.small{
-    font-size: 10px;
+.small {
+	font-size: 10px;
 }
-.bill-container{
-    /* height: 83.7vh;  */
-    height: 100%;
+
+.bill-container {
+	/* height: 83.7vh;  */
+	height: 100%;
 }
+
 .bill-container-parent{
-    /* height: 83.7vh;  */
-    height: 80%;
+	/* height: 83.7vh;  */
+	height: 80%;
 }
+
 .last-transactions{
-    height: 30vh;
-    overflow-y: scroll;   
+	height: 30vh;
+	overflow-y: scroll;   
 }
+
 thead{
-    position: sticky;
-    top: 0px;
+	position: sticky;
+	top: 0px;
 }
-/* .table th td{
-    padding: 15px !important;
-} */
+
+/*
+.table th td {
+	padding: 15px !important;
+}
+*/
+
 .table>:not(caption)>*>* {
-    padding: .6rem .6rem;
+	padding: .6rem .6rem;
 }
-#billSummary td ,#billSummary th{
- padding: 13px;
-  font-weight: 600;
+
+#billSummary td, #billSummary th {
+	padding: 13px;
+	font-weight: 600;
 }
+
 .righteous-regular {
-    font-family: "Righteous", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  .badge{
-  letter-spacing:0.025cm;
-  }
-  .form-control,.form-select{
-  font-weight: 600;
-  }
-  
-  .dropdown-item:focus, .dropdown-item:hover {
-    color: var(--bs-dropdown-link-hover-color);
-    background-color: #838383;
+	font-family: "Righteous", sans-serif;
+	font-weight: 400;
+	font-style: normal;
 }
-  
+
+.badge{
+	letter-spacing:0.025cm;
+}
+.form-control, .form-select {
+	font-weight: 600;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+	color: var(--bs-dropdown-link-hover-color);
+	background-color: #838383;
+}
