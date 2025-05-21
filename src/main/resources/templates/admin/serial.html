@@ -63,14 +63,18 @@
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
 			<div class="row g-2">
-				<div class="col-12 mt-3">
+				<div class="d-flex justify-content-center col-12 mt-3">
 					<fieldset>
-						<legend>Ticket Serial</legend>
+						<div class="text-center">
+							<legend>Ticket Serial</legend>
+						</div>
 						<form th:action="@{serial/ticket-serial}" method="post" enctype="application/x-www-form-urlencoded">
 							<table>
 								<thead>
-									<th></th>
-									<th></th>
+									<tr>
+										<th></th>
+										<th></th>
+									</tr>
 								</thead>
 								<tbody>
 									<tr>
@@ -110,14 +114,18 @@
 				</div>
 			</div>
 			<div class="row g-2">
-				<div class="col-12 mt-3">
+				<div class="d-flex justify-content-center col-12 mt-3">
 					<fieldset>
-						<legend>Series</legend>
+						<div class="text-center">
+							<legend>Series</legend>
+						</div>
 						<form th:action="@{serial/bill-series}" method="post" enctype="application/x-www-form-urlencoded">
 							<table>
 								<thead>
-									<th></th>
-									<th></th>
+									<tr>
+										<th></th>
+										<th></th>
+									</tr>
 								</thead>
 								<tbody>
 									<tr>
@@ -159,42 +167,48 @@
 				</div>
 			</div>
 			<div class="row g-2">
-				<div class="col-12 mt-3">
+				<div class="col-12 d-flex justify-content-center mt-3">
 					<fieldset>
-						<legend>Serial</legend>
+						<div class="text-center">
+							<legend>Serial</legend>
+						</div>
 						<form th:action="@{serial/bill-serial}" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return minimumSerialFieldNumber(this);">
 							<table>
 								<thead>
-									<th></th>
-									<th></th>
+									<tr>
+										<th></th>
+										<th></th>
+									</tr>
 								</thead>
 								<tbody>
 									<tr>
 										<td>
-											<label for="bill_serial_id"></label>
-											<input class="form-control" id="bill_serial_id" type="hidden" name="bill-serial-id" th:value="${bill_serial_id}" />
+											<div class="form-floating">
+												<input class="form-control" id="bill_serial_id" type="hidden" name="bill-serial-id" th:value="${bill_serial_id}" />
+												<label for="bill_serial_id"></label>
+											</div>
 										</td>
 										<td></td>
 									</tr>
 									<tr>
 										<td>
 											<div class="form-floating">
-												<label for="previous_bill_serial">Current:</label>
 												<input class="form-control text-end" id="previous_bill_serial" type="number" name="previous-bill-serial" th:value="${bill_serial}" readonly />
+												<label for="previous_bill_serial">Current:</label>
 											</div>
 										</td>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_input">New:</label>
 												<input class="form-control text-end" id="bill_serial_input" type="number" name="bill-serial" placeholder="Current serial" value="" />
+												<label for="bill_serial_input">New:</label>
 											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_start_id"></label>
 												<input class="form-control text-end" id="bill_serial_start_id" type="hidden" name="bill-serial-start-id" th:value="${bill_serial_start_id}" />
+												<label for="bill_serial_start_id"></label>
 											</div>
 										</td>
 										<td></td>
@@ -202,22 +216,22 @@
 									<tr>
 										<td>
 											<div class="form-floating">
-												<label for="previous_bill_serial_start">Start:</label>
 												<input class="form-control text-end" id="previous_bill_serial_start" type="number" name="previous-bill-serial-start" th:value="${bill_serial_start}" readonly />
+												<label for="previous_bill_serial_start">Start:</label>
 											</div>
 										</td>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_start_input">New:</label>
 												<input class="form-control text-end" id="bill_serial_start_input" type="number" name="bill-serial-start" placeholder="Start serial" value="" />
+												<label for="bill_serial_start_input">New:</label>
 											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_end_id"></label>
 												<input class="form-control text-end" id="bill_serial_end_id" type="hidden" name="bill-serial-end-id" th:value="${bill_serial_end_id}" />
+												<label for="bill_serial_end_id"></label>
 											</div>
 										</td>
 										<td></td>
@@ -225,36 +239,37 @@
 									<tr>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_end">End:</label>
 												<input class="form-control text-end" id="bill_serial_end" type="number" name="previous-bill-serial-end" th:value="${bill_serial_end}" readonly />
+												<label for="bill_serial_end">End:</label>
 											</div>
 										</td>
 										<td>
 											<div class="form-floating">
-												<label for="bill_serial_end_input">New:</label>
 												<input class="form-control text-end" id="bill_serial_end_input" type="number" name="bill-serial-end" placeholder="End serial" value="" />
+												<label for="bill_serial_end_input">New:</label>
 											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<div class="form-floating">
-												<label for="bill_serial_button"></label>
+											<div class="form-floating text-end">
 												<button class="btn btn-primary btn-lg" id="bill_serial_button" type="submit">Change</button>
+												<label for="bill_serial_button"></label>
 											</div>
 										</td>
 										<td></td>
 									</tr>
 								</tbody>
 							</table>
-						</fieldset>
-					</form>
+						</form>
+					</fieldset>
 				</div>
 			</div>
 		</div>
 		<script type="text/javascript">
 			[].forEach.call(document.getElementsByTagName("table"), function(table) {
 				var dataTable = new DataTable(table, {
+					"aaSorting" : [], // Default sorting false
 					info: false,
 					ordering: false,
 					paging: false,
