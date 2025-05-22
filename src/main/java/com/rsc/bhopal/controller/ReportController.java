@@ -34,7 +34,7 @@ public class ReportController {
 	@Autowired
 	private TicketBillRowService ticketBillRowService;
 
-	private double grandTotal;
+	// private double grandTotal;
 
 	@GetMapping(path = "/daily")
 	public String getReport(Map<String, Object> attributes) {
@@ -47,14 +47,15 @@ public class ReportController {
 		attributes.put("StartDate", "");
 		attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(new Date()));
 
-		grandTotal = 0;
+		// grandTotal = 0;
+		double []gross = {0d};
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
 		// final List<Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows()).values().stream().collect(Collectors.toList());
-		List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows()).values().stream().collect(Collectors.toList());
+		List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows(), gross).values().stream().collect(Collectors.toList());
 		attributes.put("reportTable", reportTable);
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDesc());
-		attributes.put("grandTotal", grandTotal);
+		attributes.put("grandTotal", gross[0]);
 
 		return "reports/daily";
 	}
@@ -86,13 +87,14 @@ public class ReportController {
 			log.debug("Exception in parsing Date Time");
 		}
 
-		grandTotal = 0;
+		// grandTotal = 0;
+		double []gross = {0d};
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(formattedStartDateTime, formattedEndDateTime));
-		final List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(formattedStartDateTime, formattedEndDateTime)).values().stream().collect(Collectors.toList());
+		final List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(formattedStartDateTime, formattedEndDateTime), gross).values().stream().collect(Collectors.toList());
 		attributes.put("reportTable", reportTable);
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialAtDateTimeDesc(formattedStartDateTime, formattedEndDateTime));
-		attributes.put("grandTotal", grandTotal);
+		attributes.put("grandTotal", gross[0]);
 
 		return "reports/daily";
 	}
@@ -108,15 +110,16 @@ public class ReportController {
 		attributes.put("StartDate", "");
 		attributes.put("EndDate", new SimpleDateFormat("dd MMM yy").format(new Date()));
 
-		grandTotal = 0;
+		// grandTotal = 0;
+		double []gross = {0d};
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTable());
+		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTable(), gross);
 		attributes.put("reportTables", reportTables);
 
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDesc());
-		attributes.put("grandTotal", grandTotal);
+		attributes.put("grandTotal", gross[0]);
 
 		return "reports/summary";
 	}
@@ -148,15 +151,16 @@ public class ReportController {
 			log.debug("Exception in parsing Date Time");
 		}
 
-		grandTotal = 0;
+		// grandTotal = 0;
+		double []gross = {0d};
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTableAtDateTime(formattedStartDateTime, formattedEndDateTime));
+		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTableAtDateTime(formattedStartDateTime, formattedEndDateTime), gross);
 		attributes.put("reportTables", reportTables);
 
 		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialAtDateTimeDesc(formattedStartDateTime, formattedEndDateTime));
-		attributes.put("grandTotal", grandTotal);
+		attributes.put("grandTotal", gross[0]);
 
 		return "reports/summary";
 	}

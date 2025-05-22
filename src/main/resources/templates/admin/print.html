@@ -142,11 +142,11 @@
 		</script>
 	</head>
 	<body>
-		<div th:replace="fragments/navbar::navbar"></div>
-		<div th:replace="fragments/toast::toast"></div>
+		<div th:replace="~{fragments/navbar :: navbar}"></div>
+		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container">
 			<div class="row g-2">
-				<div class="col-6 mt-3">
+				<div class="align-middle col-6 mt-3">
 					<div id="ticket_frame">
 						<th:block th:each="printAdjust : ${printAdjustList}">
 							<div th:id="${printAdjust.title}" th:if="${!#strings.endsWith(printAdjust.title, 'frame')}">[[${printAdjust.text}]]</div>
@@ -157,28 +157,50 @@
 					<form method="POST" th:action="@{/manage/print/adjust}" enctype="application/x-www-form-urlencoded">
 						<fieldset th:each="printAdjust,stat : ${printAdjustList}">
 							<th:block th:if="${!printAdjust.title.equals('ticket_frame')}">
-								<legend th:text="${#strings.capitalizeWords(#strings.replace(printAdjust.title,'_',' '),' ')}"></legend>
-								<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
-								<input type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" />
-								<label th:for="${printAdjust.title + '_top'}">Y:</label>
-								<input type="number" step="0.01" th:id="${printAdjust.title + '_top'}" th:name="|printAdjustDTOs[${stat.index}].top|" th:value="${printAdjust.top}" />
-								<label th:for="${printAdjust.title + '_left'}">X:</label>
-								<input type="number" step="0.01" th:id="${printAdjust.title + '_left'}" th:name="|printAdjustDTOs[${stat.index}].left|" th:value="${printAdjust.left}" />
-								<label th:for="${printAdjust.title + '_text'}">Text:</label>
-								<input type="text" th:id="${printAdjust.title + '_text'}" th:name="|printAdjustDTOs[${stat.index}].text|" th:value="${printAdjust.text}" />
-								<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
-								<input type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" />
+								<legend class="mt-2" th:text="${#strings.capitalizeWords(#strings.replace(printAdjust.title,'_',' '),' ')}"></legend>
+								<div class="d-flex">
+									<div class="form-floating mx-1">
+										<input class="form-control" type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" placeholder="Title:" />
+										<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="number" step="0.01" th:id="${printAdjust.title + '_top'}" th:name="|printAdjustDTOs[${stat.index}].top|" th:value="${printAdjust.top}" placeholder="Y:" />
+										<label th:for="${printAdjust.title + '_top'}">Y:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="number" step="0.01" th:id="${printAdjust.title + '_left'}" th:name="|printAdjustDTOs[${stat.index}].left|" th:value="${printAdjust.left}" placeholder="X:" />
+										<label th:for="${printAdjust.title + '_left'}">X:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="text" th:id="${printAdjust.title + '_text'}" th:name="|printAdjustDTOs[${stat.index}].text|" th:value="${printAdjust.text}" placeholder="Text:" />
+										<label th:for="${printAdjust.title + '_text'}">Text:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" placeholder="ID:" />
+										<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
+									</div>
+								</div>
 							</th:block>
 							<th:block th:if="${printAdjust.title.equals('ticket_frame')}">
 								<legend th:text="${#strings.capitalizeWords(#strings.replace(printAdjust.title,'_',' '),' ')}"></legend>
-								<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
-								<input type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" />
-								<label th:for="${printAdjust.title + '_width'}">Width:</label>
-								<input type="number" step="0.01" th:id="${printAdjust.title + '_width'}" th:name="|printAdjustDTOs[${stat.index}].width|" th:value="${printAdjust.width}" />
-								<label th:for="${printAdjust.title + '_height'}">Height:</label>
-								<input type="number" step="0.01" th:id="${printAdjust.title + '_height'}" th:name="|printAdjustDTOs[${stat.index}].height|" th:value="${printAdjust.height}" />
-								<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
-								<input type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" />
+								<div class="d-flex">
+									<div class="form-floating mx-1">
+										<input class="form-control" type="hidden" th:id="${printAdjust.title + '_title'}" th:name="|printAdjustDTOs[${stat.index}].title|" th:value="${printAdjust.title}" placeholder="Title:" />
+										<label th:for="${printAdjust.title + '_title'}" style="visibility: hidden;">Title:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="number" step="0.01" th:id="${printAdjust.title + '_width'}" th:name="|printAdjustDTOs[${stat.index}].width|" th:value="${printAdjust.width}" placeholder="Width:" />
+										<label th:for="${printAdjust.title + '_width'}">Width:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="number" step="0.01" th:id="${printAdjust.title + '_height'}" th:name="|printAdjustDTOs[${stat.index}].height|" th:value="${printAdjust.height}" placeholder="Height:" />
+										<label th:for="${printAdjust.title + '_height'}">Height:</label>
+									</div>
+									<div class="form-floating mx-1">
+										<input class="form-control" type="hidden" th:id="${printAdjust.title + '_id'}" th:name="|printAdjustDTOs[${stat.index}].id|" th:value="${printAdjust.id}" placeholder="ID:" />
+										<label th:for="${printAdjust.title + '_id'}" style="visibility: hidden;">ID:</label>
+									</div>
+								</div>
 							</th:block>
 						</fieldset>
 						<!-- <a class="btn btn-primary mt-3" th:href="@{/print/generate-pdf}">Print</a> -->

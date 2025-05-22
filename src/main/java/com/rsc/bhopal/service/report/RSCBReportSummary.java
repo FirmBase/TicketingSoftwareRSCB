@@ -10,10 +10,7 @@ import com.rsc.bhopal.dtos.report.RSCBReportGroup;
 import com.rsc.bhopal.dtos.report.RSCBReportTicket;
 
 public class RSCBReportSummary {
-
-	private double grandTotal = 0;
-
-	public LinkedHashMap<Long, RSCBReportTicket> arrangeDataInTable(List<Long> visitorIds, List<TicketBillRowDTO> ticketBillRowDTOs) {
+	public LinkedHashMap<Long, RSCBReportTicket> arrangeDataInTable(List<Long> visitorIds, List<TicketBillRowDTO> ticketBillRowDTOs, double []gross) {
 		HashMap<Long, Integer> visitorIdToIndex = new HashMap<Long, Integer>();
 		for (int index = 0; index < visitorIds.size(); ++index) {
 			visitorIdToIndex.put(visitorIds.get(index), index);
@@ -45,7 +42,7 @@ public class RSCBReportSummary {
 
 				tickets.put(ticketBillRowDTO.getTicketsRatesMasterDTO().getTicketType().getId(), ticket);
 
-				grandTotal += ticketBillRowDTO.getTicketBillDTO().getPersons() * group.getPrice();
+				gross[0] += ticketBillRowDTO.getTicketBillDTO().getPersons() * group.getPrice();
 			}
 			else {
 				RSCBReportGroup groups = ticket.getGroup().get(Long.valueOf(visitorIdToIndex.get(ticketBillRowDTO.getTicketsRatesMasterDTO().getVisitorsType().getId())));
@@ -61,13 +58,13 @@ public class RSCBReportSummary {
 					ticket.getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketBillRowDTO.getTicketsRatesMasterDTO().getVisitorsType().getId())), group);
 					ticket.setSubTotal(ticket.getSubTotal() + (ticketBillRowDTO.getTicketBillDTO().getPersons() * ticketBillRowDTO.getTicketsRatesMasterDTO().getPrice()));
 
-					grandTotal += ticketBillRowDTO.getTicketBillDTO().getPersons() * group.getPrice();
+					gross[0] += ticketBillRowDTO.getTicketBillDTO().getPersons() * group.getPrice();
 				}
 				else {
 					groups.setCount(groups.getCount() + ticketBillRowDTO.getTicketBillDTO().getPersons());
 					ticket.setSubTotal(ticket.getSubTotal() + (ticketBillRowDTO.getTicketBillDTO().getPersons() * ticketBillRowDTO.getTicketsRatesMasterDTO().getPrice()));
 
-					grandTotal += ticketBillRowDTO.getTicketBillDTO().getPersons() * ticketBillRowDTO.getTicketsRatesMasterDTO().getPrice();
+					gross[0] += ticketBillRowDTO.getTicketBillDTO().getPersons() * ticketBillRowDTO.getTicketsRatesMasterDTO().getPrice();
 				}
 			}
 		}
@@ -96,7 +93,7 @@ public class RSCBReportSummary {
 		return tickets;
 	}
 
-	public LinkedHashMap<Long, RSCBReportTicket[]> arrangeTable(List<Long> visitorIds, List<TicketReportTableDTO> ticketReportTableDTOs) {
+	public LinkedHashMap<Long, RSCBReportTicket[]> arrangeTable(List<Long> visitorIds, List<TicketReportTableDTO> ticketReportTableDTOs, double []gross) {
 		HashMap<Long, Integer> visitorIdToIndex = new HashMap<Long, Integer>();
 		for (int index = 0; index < visitorIds.size(); ++index) {
 			visitorIdToIndex.put(visitorIds.get(index), index);
@@ -134,7 +131,7 @@ public class RSCBReportSummary {
 
 				row.put(ticketReportTableDTO.getTicketId(), tickets);
 
-				grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
+				gross[0] += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
 
 				if (ticketReportTableDTO.getCancelledStatus()) {
 					// tickets[CANCELLED_TICKET] = tickets[TOTAL_TICKET];
@@ -193,13 +190,13 @@ public class RSCBReportSummary {
 					tickets[TOTAL_TICKET].getGroup().put(Long.valueOf(visitorIdToIndex.get(ticketReportTableDTO.getVisitorId())), groups);
 					tickets[TOTAL_TICKET].setSubTotal(tickets[TOTAL_TICKET].getSubTotal() + (ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice()));
 
-					grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
+					gross[0] += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
 				}
 				else {
 					groups.setCount(groups.getCount() + ticketReportTableDTO.getPersons());
 					tickets[TOTAL_TICKET].setSubTotal(tickets[TOTAL_TICKET].getSubTotal() + (ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice()));
 
-					grandTotal += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
+					gross[0] += ticketReportTableDTO.getPersons() * ticketReportTableDTO.getPrice();
 				}
 
 				if (ticketReportTableDTO.getCancelledStatus()) {
