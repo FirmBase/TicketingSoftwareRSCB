@@ -28,11 +28,7 @@ public class BillCalculatorService {
 	private VisitorTypeService visitorTypeService;
 
 	@Autowired
-	private TicketDetailsService  ticketDetailsService;
-
-	
-	@Autowired
-	private ParkingService parkingService;
+	private TicketDetailsService ticketDetailsService;
 
 	public BillSummarize summarizeBill(final TicketSelectorDTO ticketSelectorDTO) {
 		log.debug(ticketSelectorDTO.toString());

@@ -18,7 +18,6 @@ import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketReportTableDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
-import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.repos.TicketBillRowRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 

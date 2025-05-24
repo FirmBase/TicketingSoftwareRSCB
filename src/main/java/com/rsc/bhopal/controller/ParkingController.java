@@ -15,14 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.ParkingPriceDTO;
-import com.rsc.bhopal.dtos.ParkingPriceDTOWrapper;
-import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.service.ParkingService;
 import com.rsc.bhopal.service.TicketsRatesService;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller

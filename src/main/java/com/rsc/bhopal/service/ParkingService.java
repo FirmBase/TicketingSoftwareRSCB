@@ -12,13 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
 import com.rsc.bhopal.dtos.ParkingPriceDTO;
-import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.entity.ParkingDetails;
-import com.rsc.bhopal.entity.RSCUser;
-import com.rsc.bhopal.entity.TicketDetails;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
-import com.rsc.bhopal.entity.VisitorsType;
 import com.rsc.bhopal.enums.BillType;
 import com.rsc.bhopal.repos.ParkingDetailsRepository;
 import com.rsc.bhopal.repos.TicketsRatesMasterRepository;
