@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.rsc.bhopal.dtos.TicketReportTableDTO;
 import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.projections.TicketReportTable;
 
 import java.math.BigInteger;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -130,33 +130,39 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 	public List<TicketReportTable> getTicketsReportTableAtDateTime(Timestamp startDateTime, Timestamp endDateTime);
 
 	// Ticket Daily Report
-	@Query(value = "WITH report AS (\n"
-			+ "	WITH rate AS (\n"
-			+ "		SELECT\n"
-			+ "			rate.id AS rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, NULL AS parking_det_name, rate.ticket_id, ticket.ticket_name, rate.visitor_id, visitor.visitor_name, visitor.group_type\n"
-			+ "		FROM\n"
-			+ "			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_ticket_master ticket, rsc_ts.rsc_ts_visitor_type_master visitor\n"
-			+ "		WHERE\n"
-			+ "			rate.bill_type = 'TICKET' AND rate.ticket_id = ticket.id AND rate.visitor_id = visitor.id\n"
-			+ "		UNION\n"
-			+ "		SELECT"
-			+ "			rate.id As rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, parking.name AS parking_det_name, rate.ticket_id, NULL, rate.visitor_id, NULL, NULL\n"
-			+ "		FROM\n"
-			+ "			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_parking_details parking\n"
-			+ "		WHERE\n"
-			+ "			rate.bill_type = 'PARKING'\n AND rate.parking_det_id = parking.id"
-			+ "	)\n"
-			+ "	SELECT\n"
-			+ "		DENSE_RANK() OVER (ORDER BY DATE(receipt.generated_at)) AS date_serial, DATE(receipt.generated_at) AS bill_date,\n"
-			+ "		bill.id, bill.total_sum, bill.bill_id,\n"
-			+ "		receipt.persons, receipt.cancelled_status, receipt.ticket_serial, receipt.total_bill, receipt.generated_by,\n"
-			+ "		rate.*\n"
-			+ "	FROM rsc_ts.rsc_ts_ticket_bill_rows bill\r\n"
-			+ "	INNER JOIN rsc_ts.rsc_ts_ticket_bill receipt ON bill.bill_id = receipt.id\n"
-			+ "	LEFT JOIN rate ON bill.rate_master_id = rate.rate_master_id\n"
-			+ "	)\n"
-			+ "	SELECT report.* FROM report WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
-	public List<TicketDailyReport> getDailyReportDetails(Short yearSearch);
+	final public String detailedReportQuery =
+"WITH report AS (" +
+"	WITH rate AS (" +
+"		SELECT" +
+"			rate.id AS rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, NULL AS parking_det_name, rate.ticket_id, ticket.ticket_name, rate.visitor_id, visitor.visitor_name, visitor.group_type" +
+"		FROM" +
+"			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_ticket_master ticket, rsc_ts.rsc_ts_visitor_type_master visitor" +
+"		WHERE" +
+"			rate.bill_type = 'TICKET' AND rate.ticket_id = ticket.id AND rate.visitor_id = visitor.id" +
+"		UNION" +
+"		SELECT" +
+"			rate.id As rate_master_id, rate.bill_type, rate.is_active, rate.price, rate.parking_det_id, parking.name AS parking_det_name, rate.ticket_id, NULL, rate.visitor_id, NULL, NULL" +
+"		FROM" +
+"			rsc_ts.rsc_ts_ticket_rate_master rate, rsc_ts.rsc_ts_parking_details parking" +
+"		WHERE" +
+"			rate.bill_type = 'PARKING' AND rate.parking_det_id = parking.id" +
+"	)" +
+"	SELECT" +
+"		DENSE_RANK() OVER (ORDER BY DATE(receipt.generated_at)) AS date_serial, DATE(receipt.generated_at) AS bill_date," +
+"		bill.id, bill.total_sum, bill.bill_id," +
+"		receipt.persons, receipt.cancelled_status, receipt.ticket_serial, receipt.total_bill, receipt.generated_by," +
+"		rate.*" +
+"	FROM rsc_ts.rsc_ts_ticket_bill_rows bill" +
+"	INNER JOIN rsc_ts.rsc_ts_ticket_bill receipt ON bill.bill_id = receipt.id" +
+"	LEFT JOIN rate ON bill.rate_master_id = rate.rate_master_id" +
+"	)" + "\n" +
+"SELECT report.* FROM report";
+
+	@Query(value = detailedReportQuery + " " +  "WHERE YEAR(report.bill_date) = :yearSearch", nativeQuery = true)
+	public List<TicketDailyReport> getDetailedReport(Short yearSearch);
+
+	@Query(value = detailedReportQuery + " " + "WHERE report.bill_date >= :startDateTime AND report.bill_date <= :endDateTime", nativeQuery = true)
+	public List<TicketDailyReport> getDetailedReport(Date startDateTime, Date endDateTime);
 
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\'", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRows();

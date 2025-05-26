@@ -18,6 +18,7 @@ import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.TicketReportTableDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
+import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.repos.TicketBillRowRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
@@ -254,5 +255,13 @@ public class TicketBillRowService {
 			ticketReportTableDTOs.add(ticketReportTableDTO);
 		});
 		return ticketReportTableDTOs;
+	}
+
+	public List<TicketDailyReport> getDetailedReport(Short year) {
+		return ticketBillRowRepository.getDetailedReport(year);
+	}
+
+	public List<TicketDailyReport> getDetailedReport(Date startDateTime, Date endStartTime) {
+		return ticketBillRowRepository.getDetailedReport(new java.sql.Date(startDateTime.getTime()), new java.sql.Date(endStartTime.getTime()));
 	}
 }

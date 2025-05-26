@@ -15,7 +15,7 @@ import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.projections.TicketDailyReport;
 
 public class DetailedReport {
-	public static LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, Map<Long, String> parkingsMap, double[] grandTotal) {
+	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, Map<Long, String> parkingsMap, double[] grandTotal) {
 		int ticketCount = 0;
 		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
 		for (Map.Entry<Long, String> ticketMap: ticketsMap.entrySet()) {
