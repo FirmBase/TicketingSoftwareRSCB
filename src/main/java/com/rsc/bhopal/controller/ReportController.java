@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.dtos.report.RSCBReportTicket;
@@ -41,7 +40,7 @@ public class ReportController {
 		final List<String> visitorsColumn = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getName).collect(Collectors.toList());
 		attributes.put("visitorsName", visitorsColumn);
 
-		attributes.put("startDateTime", "");
+		attributes.put("startDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		attributes.put("endDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
 		attributes.put("StartDate", "");
@@ -52,9 +51,9 @@ public class ReportController {
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
 		// final List<Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows()).values().stream().collect(Collectors.toList());
-		List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows(), gross).values().stream().collect(Collectors.toList());
+		List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(new Date(), new Date()), gross).values().stream().collect(Collectors.toList());
 		attributes.put("reportTable", reportTable);
-		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDesc());
+		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDec(new Date(), new Date()));
 		attributes.put("grandTotal", gross[0]);
 
 		return "reports/daily";
@@ -93,7 +92,7 @@ public class ReportController {
 		// final LinkedHashMap<Long, Ticket> reportTable = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(formattedStartDateTime, formattedEndDateTime));
 		final List<RSCBReportTicket> reportTable = new RSCBReportSummary().arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRowsAtDateTime(formattedStartDateTime, formattedEndDateTime), gross).values().stream().collect(Collectors.toList());
 		attributes.put("reportTable", reportTable);
-		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialAtDateTimeDesc(formattedStartDateTime, formattedEndDateTime));
+		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDec(formattedStartDateTime, formattedEndDateTime));
 		attributes.put("grandTotal", gross[0]);
 
 		return "reports/daily";
@@ -104,7 +103,7 @@ public class ReportController {
 		final List<String> visitorsColumn = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getName).collect(Collectors.toList());
 		attributes.put("visitorsName", visitorsColumn);
 
-		attributes.put("startDateTime", "");
+		attributes.put("startDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		attributes.put("endDateTime", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
 		attributes.put("StartDate", "");
@@ -115,10 +114,10 @@ public class ReportController {
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTable(), gross);
+		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getOverallTicketSales(new Date(), new Date()), gross);
 		attributes.put("reportTables", reportTables);
 
-		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDesc());
+		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDec(new Date(), new Date()));
 		attributes.put("grandTotal", gross[0]);
 
 		return "reports/summary";
@@ -156,10 +155,10 @@ public class ReportController {
 
 		final List<Long> visitorsId = visitorTypeService.getAllVisitorTypes().stream().map(VisitorsTypeDTO::getId).collect(Collectors.toList());
 		// final LinkedHashMap<Long, Ticket> totalReportTickets = arrangeDataInTable(visitorsId, ticketBillRowService.getTicketBillRows());
-		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getTicketsReportTableAtDateTime(formattedStartDateTime, formattedEndDateTime), gross);
+		LinkedHashMap<Long, RSCBReportTicket[]> reportTables = new RSCBReportSummary().arrangeTable(visitorsId, ticketBillRowService.getOverallTicketSales(formattedStartDateTime, formattedEndDateTime), gross);
 		attributes.put("reportTables", reportTables);
 
-		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialAtDateTimeDesc(formattedStartDateTime, formattedEndDateTime));
+		attributes.put("ticketSerials", ticketBillRowService.getTicketsSerialDec(formattedStartDateTime, formattedEndDateTime));
 		attributes.put("grandTotal", gross[0]);
 
 		return "reports/summary";

@@ -144,20 +144,20 @@ public class TicketBillRowService {
 		return ticketBillRowDTOs;
 	}
 
-	public List<BigInteger> getTicketsSerialDesc() {
-		return ticketBillRowRepository.getTicketsSerialDesc();
+	public List<BigInteger> getTicketsSerialDec() {
+		return ticketBillRowRepository.getTicketsSerialDec();
 	}
 
-	public List<BigInteger> getTicketsSerialAtDateTimeDesc(Date startDateTime, Date endDateTime) {
+	public List<BigInteger> getTicketsSerialDec(Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
 
-		return ticketBillRowRepository.getTicketsSerialAtDateTimeDesc(timestampStartDateTime, timestampEndDateTime);
+		return ticketBillRowRepository.getTicketsSerialDec(timestampStartDateTime, timestampEndDateTime);
 	}
 	
 	public List<TicketBillRowDTO> getCancelledStatusDesc(boolean cancelledStatus) {
 		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getCancelledStatusDesc(cancelledStatus).forEach(ticketBillRow -> {
+		ticketBillRowRepository.getCancelledStatusDec(cancelledStatus).forEach(ticketBillRow -> {
 			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
 			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
 
@@ -198,7 +198,7 @@ public class TicketBillRowService {
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
 
 		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getCancelledStatusAtDateTimeDesc(timestampStartDateTime, timestampEndDateTime, cancelledStatus).forEach(ticketBillRow -> {
+		ticketBillRowRepository.getCancelledStatusDec(timestampStartDateTime, timestampEndDateTime, cancelledStatus).forEach(ticketBillRow -> {
 			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
 			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
 
@@ -234,9 +234,9 @@ public class TicketBillRowService {
 		return ticketBillRowDTOs;
 	}
 
-	public List<TicketReportTableDTO> getTicketsReportTable() {
+	public List<TicketReportTableDTO> getOverallTicketSales() {
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getTicketsReportTable().forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallTicketSales().forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);
@@ -244,12 +244,12 @@ public class TicketBillRowService {
 		return ticketReportTableDTOs;
 	}
 
-	public List<TicketReportTableDTO> getTicketsReportTableAtDateTime(Date startDateTime, Date endDateTime) {
+	public List<TicketReportTableDTO> getOverallTicketSales(Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
 
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getTicketsReportTableAtDateTime(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallTicketSales(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);

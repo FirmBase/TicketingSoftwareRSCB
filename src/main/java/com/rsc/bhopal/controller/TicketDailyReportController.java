@@ -3,6 +3,8 @@ package com.rsc.bhopal.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +58,8 @@ public class TicketDailyReportController {
 
 	@GetMapping(path = "/detailed-report/{year}")
 	public String getRequestReport(@PathVariable Short year, Model attributes) {
-		attributes.addAttribute("startDateTime", "");
-		attributes.addAttribute("endDateTime", "");
-		attributes.addAttribute("targetDate", "");
+		attributes.addAttribute("startDateTime", LocalDate.now().with(TemporalAdjusters.firstDayOfYear()));
+		attributes.addAttribute("endDateTime", LocalDate.now().with(TemporalAdjusters.lastDayOfYear()));
 
 		final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
 		final List<VisitorsTypeDTO> vistitorsList = visitorTypeService.getAllActiveVisitorTypes();
@@ -87,7 +88,6 @@ public class TicketDailyReportController {
 			try {
 				attributes.addAttribute("startDateTime", startDateTime);
 				attributes.addAttribute("endDateTime", endDateTime);
-				attributes.addAttribute("targetDate", "");
 
 				final Map<Long, String> ticketsMap = ticketDetailsService.getAllTickets().stream().collect(Collectors.toMap(TicketDetailsDTO::getId, TicketDetailsDTO::getName));
 				final List<VisitorsTypeDTO> vistitorsList = visitorTypeService.getAllActiveVisitorTypes();

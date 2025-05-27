@@ -237,23 +237,27 @@
 					$("#navbarSupportedContent").css("visibility", "hidden");
 					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "hidden");
 					$("#navbarSupportedContent").parent().parent().css("visibility", "hidden");
-					$(document).find('form[action="/report/year-wise"]').each(function() {
+					$(document).find('form').each(function() {
 						$(this).find("input").prop("hidden", true);
-						// $(this).find("input").css("visibility", "hidden");
+						$(this).find("button").css("visibility", "hidden");
 						$(this).find("label").css("visibility", "hidden");
 					});
-					$('input[id="xlsx"]').parent().parent().css("visibility", "hidden");
+					$('input[id="xlsx"]').parent().parent().parent().css("visibility", "hidden");
+					$('#zoom').css("visibility", "hidden");
+					$('label[for="zoom"]').css("visibility", "hidden");
 				});
 				$(window).on("afterprint", function() {
 					$("#navbarSupportedContent").css("visibility", "visible");
 					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "visible");
 					$("#navbarSupportedContent").parent().parent().css("visibility", "visible");
-					$(document).find('form[action="/report/year-wise"]').each(function() {
+					$(document).find('form').each(function() {
 						$(this).find("input").prop("hidden", false);
-						// $(this).find("input").css("visibility", "visible");
+						$(this).find("button").css("visibility", "visible");
 						$(this).find("label").css("visibility", "visible");
 					});
-					$('input[id="xlsx"]').parent().parent().css("visibility", "visible");
+					$('input[id="xlsx"]').parent().parent().parent().css("visibility", "visible");
+					$('#zoom').css("visibility", "visible");
+					$('label[for="zoom"]').css("visibility", "visible");
 				});
 			});
 		</script>

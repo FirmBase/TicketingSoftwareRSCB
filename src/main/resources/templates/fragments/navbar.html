@@ -29,7 +29,7 @@
 						<li><a class="dropdown-item" href="#" th:href="@{/home/summary}">Tickets Summary</a></li>
 						<li><a class="dropdown-item" href="#" th:href="@{/report/daily}">Tickets Report</a></li>
 						<li><a class="dropdown-item" href="#" th:href="@{/report/summary}">Tickets Report Summary</a></li>
-						<li><a class="dropdown-item" href="#" th:href="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}">[[${#dates.format(#dates.createNow(), 'yyyy')}]] report</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/report/detailed-report}">[[${#dates.format(#dates.createNow(), 'yyyy')}]] report</a></li>
 					</ul>
 				</li>
 			</ul>
