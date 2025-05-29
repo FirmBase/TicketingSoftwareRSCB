@@ -104,17 +104,60 @@ public class TicketBillService {
 
 	public List<TicketBillDTO> getRecentTickets(int rows) {
 		List<TicketBillDTO> ticketDTOs = new ArrayList<TicketBillDTO>();
-		Pageable page = PageRequest.of(0, rows, Sort.by(Direction.DESC, "id"));
+		Pageable page = PageRequest.of(0, rows, Sort.by(Direction.DESC, "generatedAt"));
 		List<TicketBill> tickets = generatedTicketRepo.recentRecords(page);
 		tickets.forEach(ticket -> {
 			TicketBillDTO ticketDTO = new TicketBillDTO();
 			BeanUtils.copyProperties(ticket, ticketDTO);
+			ticketDTO.setBillSeries(ticket.getSeries());
+			ticketDTO.setBillSerial(ticket.getSerialNo());
 			ticketDTO.setGeneratedBy(ticket.getGeneratedBy().getName());
 			ticketDTO.setBillSummarize(ticket.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticket.getTicketPayload(), BillSummarize.class) : null);
-			// log.debug(ticket.toString());
 			ticketDTOs.add(ticketDTO);
 		});
 		return ticketDTOs;
+	}
+
+	public List<TicketBillDTO> getTicketBills(Character billSeries, BigInteger billSerial) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(billSeries, billSerial).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
+	}
+
+	public List<TicketBillDTO> getTicketBills(Date billDate) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(new java.sql.Date(billDate.getTime())).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
+	}
+
+	public List<TicketBillDTO> getTicketBills(Date billDateFrom, Date billDateTo) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(new java.sql.Date(billDateFrom.getTime()), new java.sql.Date(billDateTo.getTime())).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
 	}
 
 	@Transactional

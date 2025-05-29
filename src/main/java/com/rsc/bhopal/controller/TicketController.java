@@ -21,14 +21,23 @@ import lombok.extern.slf4j.Slf4j;
 public class TicketController {
 
 	@Autowired
-	TicketBillService ticketBillService;
+	private TicketBillService ticketBillService;
 
-	@GetMapping(path = {"/{rows}","/"})
+	@GetMapping(path = "")
+	public String recentTickets() {
+		return "redirect:recent-tickets/10";
+	}
+
+	@GetMapping(path = "/")
+	public String recentTickets_() {
+		return "redirect:../recent-tickets/10";
+	}
+
+	@GetMapping(path = {"/{rows}", "/{rows}"})
 	public String recentTickets(@PathVariable(name = "rows", required = false) Integer rows, Map<String, Object> mapAttributes) {
-		log.debug("RECENT" + rows);
 		rows = rows == null ? 10 : rows;
 		List<TicketBillDTO> generatedTickets = ticketBillService.getRecentTickets(rows);
-		// log.debug("TIEKEer================" + generatedTickets);
+		// log.debug("Bill fetched: " + generatedTickets.size());
 		mapAttributes.put("tickets", generatedTickets);
 		return "tickets/recent";
 	}
@@ -37,6 +46,6 @@ public class TicketController {
 	public String cancelTicketBill(@RequestParam String ticketBillId) {
 		// log.debug("Request for ticket cancellation on Bill ID: " + ticketBillId);
 		ticketBillService.cancelTicketBill(Long.parseLong(ticketBillId));
-		return "redirect:/recent-tickets/10";
+		return "redirect:recent-tickets/10";
 	}
 }

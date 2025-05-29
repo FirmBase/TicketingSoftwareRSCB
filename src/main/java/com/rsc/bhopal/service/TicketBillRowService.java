@@ -22,6 +22,9 @@ import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.repos.TicketBillRowRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TicketBillRowService {
 	@Autowired

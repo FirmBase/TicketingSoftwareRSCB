@@ -1,5 +1,7 @@
 package com.rsc.bhopal.repos;
 
+import java.math.BigInteger;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -14,8 +16,17 @@ import com.rsc.bhopal.entity.TicketBill;
 public interface TicketBillRepository extends JpaRepository<TicketBill, Long>, PagingAndSortingRepository<TicketBill, Long> {
 
     // repository.findWithPageable(new PageRequest(0, 10, Direction.DESC, "id"));
-	@Query(value="from TicketBill")
-	List<TicketBill> recentRecords(Pageable pageable);
+	@Query(value = "from TicketBill")
+	public List<TicketBill> recentRecords(Pageable pageable);
+
+	@Query(value = "SELECT tb FROM TicketBill tb WHERE tb.series = :billSeries AND tb.serialNo = :billSerial", nativeQuery = false)
+	public List<TicketBill> getTicketBills(Character billSeries, BigInteger billSerial);
+
+	@Query(value = "SELECT tb FROM TicketBill tb WHERE DATE(tb.generatedAt) = :billDate", nativeQuery = false)
+	public List<TicketBill> getTicketBills(Date billDate);
+
+	@Query(value = "SELECT tb FROM TicketBill tb WHERE DATE(tb.generatedAt) >= :billDateFrom AND DATE(tb.generatedAt) <= :billDateTo", nativeQuery = false)
+	public List<TicketBill> getTicketBills(Date billDateFrom, Date billDateTo);
 
 /*
 	@Query(value="SELECT \n" + 

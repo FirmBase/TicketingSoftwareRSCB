@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Long> {
 
-	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt BETWEEN :startDateTime AND :endDateTime", nativeQuery = false)
+	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt >= :startDateTime AND bill.generatedTicket.generatedAt <= :endDateTime", nativeQuery = false)
 	public List<TicketBillRow> getTicketBillRowsAtDateTime(Timestamp startDateTime, Timestamp endDateTime);
 
 	@Query(value = "WITH report_table AS (" +
@@ -82,7 +82,9 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 				"	WHERE" +
 				"		rsc_ts.rsc_ts_ticket_rate_master.bill_type = 'TICKET'" +
 				"		AND" +
-				"		rsc_ts.rsc_ts_ticket_bill.generated_at BETWEEN :startDateTime AND :endDateTime " +
+				"		rsc_ts.rsc_ts_ticket_bill.generated_at >= :startDateTime" +
+				"		AND" +
+				"		rsc_ts.rsc_ts_ticket_bill.generated_at <= :endDateTime" +
 				"	ORDER BY" +
 				"		serial_no ASC, rsc_ts.rsc_ts_ticket_bill.ticket_serial DESC" +
 				"	)" +
@@ -130,12 +132,12 @@ public interface TicketBillRowRepository extends JpaRepository<TicketBillRow, Lo
 	@Query(value = "SELECT bill.generatedTicket.ticketSerial FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
 	public List<BigInteger> getTicketsSerialDec();
 
-	@Query(value = "SELECT bill.generatedTicket.ticketSerial FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt BETWEEN :startDateTime AND :endDateTime ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
+	@Query(value = "SELECT bill.generatedTicket.ticketSerial FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt >= :startDateTime AND bill.generatedTicket.generatedAt <= :endDateTime ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
 	public List<BigInteger> getTicketsSerialDec(Timestamp startDateTime, Timestamp endDateTime);
 
 	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.cancelledStatus = :cancelledStatus ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
 	public List<TicketBillRow> getCancelledStatusDec(boolean cancelledStatus);
 
-	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt BETWEEN :startDateTime AND :endDateTime AND bill.generatedTicket.cancelledStatus = :cancelledStatus ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
+	@Query(value = "SELECT bill FROM TicketBillRow bill WHERE bill.rate.billType = \'TICKET\' AND bill.generatedTicket.generatedAt >= :startDateTime AND bill.generatedTicket.generatedAt <= :endDateTime AND bill.generatedTicket.cancelledStatus = :cancelledStatus ORDER BY bill.generatedTicket.ticketSerial DESC", nativeQuery = false)
 	public List<TicketBillRow> getCancelledStatusDec(Timestamp startDateTime, Timestamp endDateTime, boolean cancelledStatus);
 }

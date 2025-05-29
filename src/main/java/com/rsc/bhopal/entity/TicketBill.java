@@ -75,7 +75,6 @@ public class TicketBill {
 
 	@Override
 	public String toString() {
-		return "GeneratedTicket [id=" + id + ", generatedAt=" + generatedAt + ", totalBill=" + totalBill + ", generatedBy="
-				+ generatedBy + "]";
+		return "GeneratedTicket [id=" + id + ", generatedAt=" + generatedAt + ", totalBill=" + totalBill + ", generatedBy=" + generatedBy + "]";
 	}
 }
