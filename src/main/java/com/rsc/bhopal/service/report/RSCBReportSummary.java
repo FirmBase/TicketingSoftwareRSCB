@@ -300,7 +300,7 @@ public class RSCBReportSummary {
 						RSCBReportGroup group = new RSCBReportGroup();
 						group.setGroupName("");
 						group.setCount(0);
-                        /*
+						/*
 						try {
 							group.setPrice(ticketsRatesService.getTicketRateByGroup(element.getValue()[index].getTicketId(), mappedIndex.getKey()).getPrice());
 						}
@@ -310,8 +310,8 @@ public class RSCBReportSummary {
 						catch(java.util.NoSuchElementException ex) {
 							group.setPrice(0f);
 						}
-                        */
-                        group.setPrice(0f);
+						*/
+						group.setPrice(0f);
 						group.setPersonCount(0);
 						element.getValue()[index].getGroup().put(Long.valueOf(mappedIndex.getValue()), group);
 					}
