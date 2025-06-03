@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.rsc.bhopal.annotations.RSCLog;
 import com.rsc.bhopal.dtos.ApplicationConstantDTO;
 import com.rsc.bhopal.dtos.PrintAdjustDTO;
 import com.rsc.bhopal.entity.ApplicationConstant;
@@ -52,6 +53,7 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Ticket Serial")
 	public void replaceTicketSerial(long id, String ticketSerial) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
@@ -69,6 +71,7 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Bill Series")
 	public void replaceBillSeries(long id, String billSeries) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
@@ -86,6 +89,7 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Bill Serial start range")
 	public void replaceBillSerialStart(long id, String billSerialStart) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
@@ -103,6 +107,7 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Bill Serial end range")
 	public void replaceBillSerialEnd(long id, String billSerialEnd) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
@@ -120,6 +125,7 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Bill Serial next serial")
 	public void replaceBillSerial(long id, String billSerial) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
@@ -139,6 +145,7 @@ public class ApplicationConstantService {
 		return printAdjustDTOs;
 	}
 
+	@RSCLog(desc = "Change print coordinates")
 	public void setAllCurrentPrintCoordinates(List<PrintAdjustDTO> printAdjustDTOs) {
 		printAdjustDTOs.forEach(printAdjustDTO -> {
 			Optional<ApplicationConstant> applicationConstant = applicationConstantRepository.findById(printAdjustDTO.getId());

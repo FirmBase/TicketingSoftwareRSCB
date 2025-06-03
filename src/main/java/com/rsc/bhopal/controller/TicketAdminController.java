@@ -21,28 +21,25 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/manage/tickets")
 public class TicketAdminController {
-	
 	@Autowired
 	TicketDetailsService ticketDetailsService;
-	
-	
+
 	@GetMapping(path = "/add")
 	public String addGroup(Map<String,Object> attributes) {			
 		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllTickets();
 		attributes.put("tickets", tickets);
 		return "tickets/add";
 	}
-	
+
 	@PostMapping(path = "/add")
 	public String addGroup(@RequestParam("name") String ticketName,Principal user) throws JsonProcessingException {
 		ticketDetailsService.addTicket(ticketName,user.getName());        
 		return "redirect:/manage/tickets/add";
 	}
-	
+
 	@PostMapping("/status")
 	public String changeStatus(@RequestParam("ticketId") Long ticketId) {
 		ticketDetailsService.changeTicketStatus(ticketId);	    
 		return "redirect:/manage/tickets/add";
 	}
-
 }

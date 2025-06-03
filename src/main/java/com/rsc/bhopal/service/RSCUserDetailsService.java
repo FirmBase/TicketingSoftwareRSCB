@@ -49,7 +49,7 @@ public class RSCUserDetailsService {
 		});
 		return roleDTOs;
 	}
-	
+
 	public void addUser(RSCUserDTO dto) {
 		RSCUser user = new RSCUser();
 		BeanUtils.copyProperties(dto, user);

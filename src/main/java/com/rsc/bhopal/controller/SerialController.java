@@ -81,10 +81,10 @@ public class SerialController {
 			applicationConstantService.replaceBillSerial(billSerialId, String.valueOf(billSerial));
 			applicationConstantService.replaceBillSerialStart(billSerialStartId, String.valueOf(billSerialStart));
 			applicationConstantService.replaceBillSerialEnd(billSerialEndId, String.valueOf(billSerialEnd));
-			redirectAttributes.addFlashAttribute("Success", CommonUtills.convertToJSON(ResponseMessage.builder().status(true).message("Serials changed.").build()));
+			redirectAttributes.addFlashAttribute("message", CommonUtills.convertToJSON(ResponseMessage.builder().status(true).message("Serials changed.").build()));
 		}
 		else {
-			redirectAttributes.addFlashAttribute("Failure", CommonUtills.convertToJSON(ResponseMessage.builder().status(false).message("Check serials inputs.").build()));
+			redirectAttributes.addFlashAttribute("message", CommonUtills.convertToJSON(ResponseMessage.builder().status(false).message("Check serials inputs.").build()));
 		}
 
 		/*
