@@ -41,7 +41,7 @@ public class HomeController {
 	@Autowired
 	private TicketSummaryService ticketSummaryService;
 
-	@GetMapping(path = {"/home","/home/{variable}"} )
+	@GetMapping(path = {"/", "/home", "/home/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
 		List<TicketDetailsDTO> tickets = ticketDetails.getAllActiveTickets();
 		List<VisitorsTypeDTO> visitors = visitorDetails.getAllActiveVisitorTypes();

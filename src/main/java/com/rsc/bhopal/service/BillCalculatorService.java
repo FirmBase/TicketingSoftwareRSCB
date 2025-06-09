@@ -63,10 +63,10 @@ public class BillCalculatorService {
 			final TicketsRatesMasterDTO ticketRate = ticketsRatesService.getTicketRateByGroup(ticketId, ticketSelectorDTO.getGroup());
 
 			if(ticketRate==null) {
-				 String ticketName = ticketDetailsService.getTicketsById(ticketId).get().getName();
-				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for "+ticketName);
+				String ticketName = ticketDetailsService.getTicketsById(ticketId).get().getName();
+				throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for "+ticketName);
 			}
-			
+
 			BillDescription bill = new BillDescription();
 
 			bill.setTicket(ticketRate.getTicketType().getName());
@@ -85,16 +85,16 @@ public class BillCalculatorService {
 
 		final VisitorsTypeDTO visitorDTO = visitorTypeService.getGeneralVisitorId(familyGroupId);
 		final List<Long> tickets = ticketsRatesService.getTicketsByGroup(familyGroupId);
-		
+
 		if(tickets==null || tickets.isEmpty()) {
-			 throw new TicketRateNotMaintainedException("Tickets not added in Combo Group.");
+			throw new TicketRateNotMaintainedException("Tickets not added in Combo Group.");
 		}
 
 		for (final Long ticketId: tickets) {
 			TicketsRatesMasterDTO ticketRate = ticketsRatesService.getTicketRateByGroup(ticketId, familyGroupId);	
-			
+
 			if(ticketRate==null) {
-				 throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
+				throw new TicketRateNotMaintainedException("Ticket Rate is not maintained for Combo Group.");
 			}
 			BillDescription bill = new BillDescription();
 

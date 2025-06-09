@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -225,7 +226,7 @@ public class TicketBillService {
 		}
 
 		if (dto.getParkings() != null) {
-			for (ParkingCalDTO parking: dto.getParkings()) {
+			for (ParkingCalDTO parking: dto.getParkings().stream().filter(parkingDTO -> parkingDTO.getCount() > 1).collect(Collectors.toList())) {
 				TicketBillRow billRow = new TicketBillRow();
 				final TicketsRatesMaster rate = ticketsRatesService.getActiveParkingRateFloat(parking.getId());
 				// log.debug("Parking Rate: " + rate.getPrice());
