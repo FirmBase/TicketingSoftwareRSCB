@@ -163,7 +163,7 @@ public class TicketBillService {
 
 	@Transactional
 	public Long saveAndPrintTicket(TicketSelectorDTO dto, Principal user) throws JsonProcessingException {
-		if (!applicationConstantService.checkBillSerialInRange()) {
+		if (applicationConstantService.checkBillSerialInRange()) {
 			throw new SerialRangeOutOfRangeException("Cannot generate new bill, check Bill Serial.");
 		}
 

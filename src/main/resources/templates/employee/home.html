@@ -183,8 +183,12 @@
 								<table class="table table-striped border" id="billSummary">
 									<thead class="bg-gray sticky-thead">
 										<tr>
-											<th scope="col" colspan="3">
+											<th scope="col" colspan="2">
 												<h5 class="m-0">Bill Summary</h5>
+											</th>
+											<th scope="col">
+												<h5 th:if="${bill_serial_valid}" class="h5 fw-bold m-0" th:text="${bill_series + '-' + bill_serial}"></h5>
+												<h5 th:if="${!bill_serial_valid}" class="h5 fw-bold m-0" th:text="${bill_series + '-' + bill_serial}" style="color: red;"></h5>
 											</th>
 										</tr>
 										<tr>
@@ -208,11 +212,14 @@
 								</div>
 								<div class="d-flex justify-content-center mb-5">
 									<button type="button" class="btn btn-success p-3 mx-2" id="CALCULATE">Calculate Bill</button>
-									<button type="submit" class="btn btn-primary p-3 mx-2" id="PRINT">Generate Bill</button>
+									<button type="submit" class="btn btn-primary p-3 mx-2" th:attr="disabled=${!bill_serial_valid}" id="PRINT">Generate Bill</button>
 									<label for="bill_print"></label>
 									<input type="hidden" name="printBill" class="form-control"
 										id="bill_print" placeholder="Print Bill" value="true" />
-									<button type="submit" class="btn btn-primary p-3 mx-2" id="GENERATE">Print Ticket</button>
+									<button type="submit" class="btn btn-primary p-3 mx-2" th:attr="disabled=${!bill_serial_valid}" id="GENERATE">Print Ticket</button>
+								</div>
+								<div class="text-center">
+									<h5 class="h5" th:if="${!bill_serial_valid}" style="color: red;">First check <a class="h5 fw-bold" href="manage/serial">serial</a> to print further tickets</h5>
 								</div>
 							</div>
 						</div>
