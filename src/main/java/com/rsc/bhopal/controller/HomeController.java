@@ -16,6 +16,7 @@ import com.rsc.bhopal.dtos.TicketBillSummaryDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.enums.GroupType;
+import com.rsc.bhopal.service.ApplicationConstantService;
 import com.rsc.bhopal.service.ParkingService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketSummaryService;
@@ -40,6 +41,9 @@ public class HomeController {
 
 	@Autowired
 	private TicketSummaryService ticketSummaryService;
+
+	@Autowired
+	private ApplicationConstantService applicationConstantService;
 
 	@GetMapping(path = {"/", "/home", "/home/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
@@ -78,6 +82,10 @@ public class HomeController {
 				).collect(Collectors.toList()));
 
 			attributes.put("parkings", parkingService.getActiveParkingDetails());
+
+			attributes.put("bill_series", applicationConstantService.getBillSeries().getData());
+			attributes.put("bill_serial", applicationConstantService.getBillSerial().getData());
+			attributes.put("bill_serial_valid", applicationConstantService.checkBillSerialInRange());
 			redirectString = "employee/home";
 		}
 		return redirectString;
