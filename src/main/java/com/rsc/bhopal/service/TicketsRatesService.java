@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import com.rsc.bhopal.dtos.NewTicketRate;
 import com.rsc.bhopal.dtos.ParkingDetailsDTO;
@@ -33,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class TicketsRatesService {
-
 	@Autowired
 	private TicketsRatesMasterRepository ticketRateRepo;
 

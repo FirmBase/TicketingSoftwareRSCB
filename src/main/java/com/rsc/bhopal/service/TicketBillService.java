@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ import com.rsc.bhopal.entity.TicketBill;
 import com.rsc.bhopal.entity.TicketBillRow;
 import com.rsc.bhopal.entity.TicketsRatesMaster;
 import com.rsc.bhopal.entity.VisitorsType;
+import com.rsc.bhopal.exception.SerialRangeOutOfRangeException;
 import com.rsc.bhopal.exception.TicketRateNotMaintainedException;
-import com.rsc.bhopal.projections.TicketSummary;
 import com.rsc.bhopal.repos.TicketBillRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
@@ -91,12 +92,10 @@ public class TicketBillService {
 	public void cancelTicketBill(long id) {
 		TicketBill ticketBill = generatedTicketRepo.findById(id).orElseThrow(() -> new RuntimeException("Ticket Bill not found"));
 		try {
-			TicketBillDTO ticketBillDTO = new TicketBillDTO();
-			ticketBillDTO.setBillSummarize(CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class));
-			ticketBillDTO.getBillSummarize().setCancelledStatus(true);
-			ticketBillDTO.setCancelledStatus(true);
-			ticketBill.setCancelledStatus(true);
-			ticketBill.setTicketPayload(CommonUtills.convertToJSON(ticketBillDTO.getBillSummarize()));
+			final BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class);
+			ticketBill.setCancelledStatus(true);	// 'cancelled_status' i.e. column
+			billSummarize.setCancelledStatus(true);	// BillSummarize i.e. JSON
+			ticketBill.setTicketPayload(CommonUtills.convertToJSON(billSummarize));
 			generatedTicketRepo.save(ticketBill);
 		}
 		catch(JsonProcessingException ex) {
@@ -106,21 +105,68 @@ public class TicketBillService {
 
 	public List<TicketBillDTO> getRecentTickets(int rows) {
 		List<TicketBillDTO> ticketDTOs = new ArrayList<TicketBillDTO>();
-		Pageable page = PageRequest.of(0, rows, Sort.by(Direction.DESC, "id"));
+		Pageable page = PageRequest.of(0, rows, Sort.by(Direction.DESC, "generatedAt"));
 		List<TicketBill> tickets = generatedTicketRepo.recentRecords(page);
 		tickets.forEach(ticket -> {
 			TicketBillDTO ticketDTO = new TicketBillDTO();
 			BeanUtils.copyProperties(ticket, ticketDTO);
+			ticketDTO.setBillSeries(ticket.getSeries());
+			ticketDTO.setBillSerial(ticket.getSerialNo());
 			ticketDTO.setGeneratedBy(ticket.getGeneratedBy().getName());
 			ticketDTO.setBillSummarize(ticket.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticket.getTicketPayload(), BillSummarize.class) : null);
-			// log.debug(ticket.toString());
 			ticketDTOs.add(ticketDTO);
 		});
 		return ticketDTOs;
 	}
 
+	public List<TicketBillDTO> getTicketBills(Character billSeries, BigInteger billSerial) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(billSeries, billSerial).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
+	}
+
+	public List<TicketBillDTO> getTicketBills(Date billDate) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(new java.sql.Date(billDate.getTime())).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
+	}
+
+	public List<TicketBillDTO> getTicketBills(Date billDateFrom, Date billDateTo) {
+		List<TicketBillDTO> ticketBillDTOs = new ArrayList<TicketBillDTO>();
+		generatedTicketRepo.getTicketBills(new java.sql.Date(billDateFrom.getTime()), new java.sql.Date(billDateTo.getTime())).forEach(ticketBill -> {
+			TicketBillDTO ticketBillDTO = new TicketBillDTO();
+			BeanUtils.copyProperties(ticketBill, ticketBillDTO);
+			ticketBillDTO.setBillSeries(ticketBill.getSeries());
+			ticketBillDTO.setBillSerial(ticketBill.getSerialNo());
+			ticketBillDTO.setGeneratedBy(ticketBill.getGeneratedBy().getName());
+			ticketBillDTO.setBillSummarize(ticketBill.getTicketPayload() != null ? CommonUtills.convertJSONToObject(ticketBill.getTicketPayload(), BillSummarize.class) : null);
+			ticketBillDTOs.add(ticketBillDTO);
+		});
+		return ticketBillDTOs;
+	}
+
 	@Transactional
-	public void saveAndPrintTicket(TicketSelectorDTO dto, Principal user) throws JsonProcessingException {
+	public Long saveAndPrintTicket(TicketSelectorDTO dto, Principal user) throws JsonProcessingException {
+		if (!applicationConstantService.checkBillSerialInRange()) {
+			throw new SerialRangeOutOfRangeException("Cannot generate new bill, check Bill Serial.");
+		}
+
 		Optional<VisitorsType> comboGroup = null;
 		List<TicketBillRow> billRows = new ArrayList<TicketBillRow>();
 		Double totalPrice = 0d;
@@ -136,8 +182,14 @@ public class TicketBillService {
 		generatedTicket.setGeneratedBy(userDetailsService.getUserByUsername(user.getName()));
 
 		// New column that were already present in JSON
-		generatedTicket.setTicketSerial(new BigInteger(applicationConstantService.getTicketSerial().getData()));
+		final BigInteger ticketSerial = new BigInteger(applicationConstantService.getTicketSerial().getData());
+		generatedTicket.setTicketSerial(ticketSerial);
 		generatedTicket.setCancelledStatus(false);
+
+		final Character billSeries = applicationConstantService.getBillSeries().getData().charAt(0);
+		generatedTicket.setSeries(billSeries);
+		final BigInteger billSerial = new BigInteger(applicationConstantService.getBillSerial().getData());
+		generatedTicket.setSerialNo(billSerial);
 
 		// Generated Ticket
 		List<TicketsRatesMaster> rates = null;
@@ -174,7 +226,7 @@ public class TicketBillService {
 		}
 
 		if (dto.getParkings() != null) {
-			for (ParkingCalDTO parking: dto.getParkings()) {
+			for (ParkingCalDTO parking: dto.getParkings().stream().filter(parkingDTO -> parkingDTO.getCount() > 1).collect(Collectors.toList())) {
 				TicketBillRow billRow = new TicketBillRow();
 				final TicketsRatesMaster rate = ticketsRatesService.getActiveParkingRateFloat(parking.getId());
 				// log.debug("Parking Rate: " + rate.getPrice());
@@ -187,18 +239,26 @@ public class TicketBillService {
 		}
 
 		ApplicationConstantDTO applicationConstantDTO = applicationConstantService.getTicketSerial();
-		final BigInteger ticketSerial = new BigInteger(applicationConstantDTO.getData());
-		final BigInteger newTicketSerial = ticketSerial.add(new BigInteger("1"));
-		applicationConstantService.replaceTicketSerial(applicationConstantDTO.getId(), newTicketSerial.toString());
+		// final BigInteger ticketSerial = new BigInteger(applicationConstantDTO.getData());
+		// final BigInteger newTicketSerial = ticketSerial.add(new BigInteger("1"));
+		// applicationConstantService.replaceTicketSerial(applicationConstantDTO.getId(), newTicketSerial.toString());
+		applicationConstantService.replaceTicketSerial(applicationConstantDTO.getId(), ticketSerial.add(new BigInteger("1")).toString());
+		applicationConstantDTO = applicationConstantService.getBillSerial();
+		// BigInteger billSerial = new BigInteger(applicationConstantDTO.getData());
+		applicationConstantService.replaceBillSerial(applicationConstantDTO.getId(), billSerial.add(new BigInteger("1")).toString());
 
 		BillSummarize billSummarize = billCalculator.summarizeBill(dto);
 		billSummarize.setTicketSerial(ticketSerial);
 		// billSummarize.setTicketSerial(newTicketSerial);
 		billSummarize.setCancelledStatus(false);
+		billSummarize.setBillSeries(billSeries);
+		billSummarize.setBillSerial(billSerial);
 		generatedTicket.setTicketPayload(CommonUtills.convertToJSON(billSummarize));
 		generatedTicket.setTotalBill(totalPrice);
 		generatedTicket.setBillSummary(billRows);
 		generatedTicketRepo.save(generatedTicket);
 		// log.debug("generatedTicket " + CommonUtills.convertToJSON(generatedTicket));
+		generatedTicketRepo.flush();
+		return generatedTicket.getId();
 	}
 }

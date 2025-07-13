@@ -13,7 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -39,7 +38,7 @@ public class ParkingDetails {
 	@Column(name="IS_ACTIVE")
 	private Boolean isActive;	
 
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "parkingDetails")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parkingDetails")
 	@Cascade(CascadeType.ALL)
 	private List<TicketsRatesMaster> rateMaster;
 }

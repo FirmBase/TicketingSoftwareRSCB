@@ -1,4 +1,5 @@
 var billSummaryTable;
+
 var tableConfig = {
 	info: false,
 	ordering: false,
@@ -10,18 +11,25 @@ var tableConfig = {
 };
 
 $(document).ready(function() {
-
 	$('#CALCULATE').on("click", function() {
+		$('#bill_print').val(false);
 		getFormFields($(this).closest("form"));
-		return false;
+		// return false;
 	});
-	
+
 	$('#PRINT').on("click", function() {
-		getFormFields($(this).closest("form"));
-		return true;
+		$('#bill_print').val(false);
+		// getFormFields($(this).closest("form"));
+		// return true;
 	});
-		billSummaryTable =
-		new DataTable('#billSummary', tableConfig);
+
+	$('#GENERATE').on("click", function() {
+		$('#bill_print').val(true);
+		// getFormFields($(this).closest("form"));
+		// return true;
+	});
+
+	billSummaryTable = new DataTable('#billSummary', tableConfig);
 });
 
 function getFormFields($form) {
@@ -34,16 +42,16 @@ function getFormFields($form) {
 		type: "POST",
 		data: data.join("&"),
 		contentType: "application/x-www-form-urlencoded",
-	}).done(function(data,status) {
+	}).done(function(data, status) {
 		let grandTotal = 0;
 		billSummaryTable.clear().destroy();
-		tableConfig.data = [];		
-        console.log(JSON.stringify(data));     
-          
-		data.data.billDescription.forEach(function(obj) {			
+		tableConfig.data = [];
+		console.log(JSON.stringify(data));
+
+		data.data.billDescription.forEach(function(obj) {
 			var row = [
-				obj.ticket+"<span class='ms-1 badge text-dark bg-info'>" + obj.groupName.toUpperCase() + "</span>",
-				"<small>"  +(data.data.comboCase?obj.perPersonPrice: obj.person+ " x " + obj.perPersonPrice)+"</small>",
+				obj.ticket + "<span class='ms-1 badge text-dark bg-info'>" + obj.groupName.toUpperCase() + "</span>",
+				"<small>" + (data.data.comboCase?obj.perPersonPrice: obj.person+ " x " + obj.perPersonPrice) + "</small>",
 				obj.totalSum
 			];
 			grandTotal += obj.totalSum;
@@ -61,14 +69,13 @@ function getFormFields($form) {
 				tableConfig.data.push(row);
 			});
 		}
-		billSummaryTable =
-			new DataTable('#billSummary', tableConfig);
+
+		billSummaryTable = new DataTable('#billSummary', tableConfig);
 		$('#grandTotal').text(grandTotal);
-		showToast('Message',data.message,data.status);
-	}).fail(function(data){
-		showToast('Message',data.responseJSON.message,data.responseJSON.status);	
-	});	
-	;
+		showToast('Message', data.message, data.status);
+	}).fail(function(data) {
+		showToast('Message', data.responseJSON.message, data.responseJSON.status);
+	});
 }
 
 /*

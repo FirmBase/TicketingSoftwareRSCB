@@ -12,9 +12,14 @@ import java.util.stream.Collectors;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.rsc.bhopal.dtos.report.BillDate;
+import com.rsc.bhopal.dtos.report.Group;
+import com.rsc.bhopal.dtos.report.Parking;
+import com.rsc.bhopal.dtos.report.Ticket;
 import com.rsc.bhopal.enums.BillType;
 import com.rsc.bhopal.enums.GroupType;
 import com.rsc.bhopal.projections.TicketDailyReport;
+import com.rsc.bhopal.service.report.DetailedReport;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -37,7 +42,7 @@ public class DailyReportExcel {
 
 	public DailyReportExcel(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> groupsSingleMap, Map<Long, String> groupsComboMap, Map<Long, String> parkingsMap, HttpServletResponse httpServletResponse) throws IOException {
 		double []grandTotal = new double[1];
-		LinkedHashMap<Date, BillDate> billDates = arrange(ticketDailyReports, ticketsMap, groupsSingleMap, groupsComboMap, parkingsMap, grandTotal);
+		LinkedHashMap<Date, BillDate> billDates = new DetailedReport().arrange(ticketDailyReports, ticketsMap, groupsSingleMap, groupsComboMap, parkingsMap, grandTotal);
 		List<String> ticketsName = ticketsMap.values().stream().collect(Collectors.toList());
 		List<String> groupsSingleName = groupsSingleMap.values().stream().collect(Collectors.toList());
 		List<String> groupsComboName = groupsComboMap.values().stream().collect(Collectors.toList());
@@ -447,7 +452,7 @@ public class DailyReportExcel {
 		workbook.close();
 	}
 	*/
-
+/*
 	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, Map<Long, String> parkingsMap, double[] grandTotal) {
 		int ticketCount = 0;
 		LinkedHashMap<Long, Integer> ticketIdToIndex = new LinkedHashMap<Long, Integer>();
@@ -672,6 +677,7 @@ public class DailyReportExcel {
 		}
 		return billDates;
 	}
+*/
 
 	/*
 	public LinkedHashMap<Date, BillDate> arrange(List<TicketDailyReport> ticketDailyReports, Map<Long, String> ticketsMap, Map<Long, String> visitorsSingleMap, Map<Long, String> visitorsComboMap, double[] grandTotal) {
@@ -978,7 +984,7 @@ public class DailyReportExcel {
         }
 		return columnName.toString();
 	}
-
+/*
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Data
@@ -1013,4 +1019,5 @@ public class DailyReportExcel {
 		private Integer quantity;
 		private Float amount;
 	}
+*/
 }

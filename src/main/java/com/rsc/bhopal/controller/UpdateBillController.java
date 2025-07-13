@@ -3,33 +3,21 @@ package com.rsc.bhopal.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketsRatesService;
-import com.rsc.bhopal.service.VisitorTypeService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
 @RequestMapping("/bill")
 @Slf4j
 public class UpdateBillController {
-
-	@Autowired
-	private TicketDetailsService ticketDetails;
-
 	@Autowired
 	private TicketsRatesService ticketsRatesService;
-
-	@Autowired
-	private VisitorTypeService visitorDetails;
-
 	protected UpdateBillController() {
 		log.debug("Bill update requested.");
 	}
@@ -42,10 +30,7 @@ public class UpdateBillController {
 	@GetMapping("/")
 	public String getMethodName() {
 		// ticketDetails.getAllTickets().forEach(System.out::println);
-
 		ticketsRatesService.getAllTicketRates().forEach(System.out::println);
-
 		return "<html><head><title></title></head><body bgcolor=\"black\" text=\"white\">hello</body></html>";
 	}
-
 }

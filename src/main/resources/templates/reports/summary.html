@@ -92,57 +92,58 @@
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-12 mt-1 d-flex justify-content-between">
+				<div class="col-4">
 					<div class="d-flex flex-column">
-						<h4 class="h4">REGIONAL SCIENCE CENTRE, BHOPAL</h4>
-						<h4 class="h4">TICKET REPORT</h4>
+						<h4 class="h4 text-center">REGIONAL SCIENCE CENTRE, BHOPAL</h4>
+						<h4 class="h4 text-center">DAILY REPORT</h4>
 					</div>
-					<div class="align-items-center mt-auto">
-						<h5 th:if="${#strings.isEmpty(StartDate)}" class="h5">[[${EndDate}]]</h5>
-						<h5 th:if="${!#strings.isEmpty(StartDate)}" class="h5">[[${StartDate}]] - [[${EndDate}]]</h5>
-					</div>
-					<div class="text-center mx-auto">
-						<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
-					</div>
-					<div class="text-end d-flex flex-column">
-						<h4 th:if="${!#lists.isEmpty(ticketSerials)}" class="h4 m-0">Ticket Serial start: [[${ticketSerials.get(ticketSerials.size() - 1)}]]</h4>
-						<h4 th:if="${!#lists.isEmpty(ticketSerials)}" class="h4 m-0">Ticket Serial end: [[${ticketSerials[0]}]]</h4>
+					<div class="text-end">
+						<h5 th:if="${#strings.isEmpty(StartDate)}" class="h5 font-weight-bold" style="font-weight: bold;">[[${EndDate}]]</h5>
+						<h5 th:if="${!#strings.isEmpty(StartDate)}" class="h5 font-weight-bold" style="font-weight: bold;">[[${StartDate}]] - [[${EndDate}]]</h5>
 					</div>
 				</div>
-				<!--
-				<div class="col-12 mt-1 d-flex justify-content-center">
+				<div class="col-4 text-center">
 					<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
 				</div>
-				-->
-				<div class="col-12 mt-3">
-					<form th:action="@{/report/summary}" method="POST" enctype="application/x-www-form-urlencoded">
-						<div class="row g-2">
-							<div class="col-lg-2 col-md-2">
-								<div class="form-floating">
-									<input type="date" id="startDateTime" name="startDateTime" class="form-control" th:value="${startDateTime}" required autofocus>
-									<label for="startDateTime">From Date</label>
-								</div>
-							</div>
-							<div class="col-lg-2 col-md-2">
-								<div class="form-floating">
-									<input type="date" id="endDateTime" name="endDateTime" class="form-control" th:value="${endDateTime}" required>
-									<label for="endDateTime">To Date</label>
-								</div>
-							</div>
-							<div class="col-lg-auto col-md-auto d-flex align-items-center">
-								<div class="btn-group">
-									<button type="submit" class="btn btn-success">Search</button>
-								</div>
-							</div>
-							<div class="col-lg-auto col-md-auto d-flex align-items-center">
-								<div class="btn-group">
-									<button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
-								</div>
-							</div>
+				<div class="col-4 d-flex align-items-center justify-content-end">
+					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">Start Tkt No. [[${ticketSerials.get(ticketSerials.size() - 1)}]]</h5>
+					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">End Tkt No. [[${ticketSerials[0]}]]</h5>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-6 my-2 justify-content-center">
+					<form th:action="@{/report/summary}" method="POST" enctype="application/x-www-form-urlencoded" class="d-flex">
+						<div class="form-floating mx-2">
+							<input type="date" id="startDateTime" name="startDateTime" class="form-control" th:value="${startDateTime}" required autofocus>
+							<label for="startDateTime">From Date</label>
+						</div>
+						<div class="form-floating mx-2">
+							<input type="date" id="endDateTime" name="endDateTime" class="form-control" th:value="${endDateTime}" required>
+							<label for="endDateTime">To Date</label>
+						</div>
+						<div class="btn-group mx-2">
+							<button type="submit" class="btn btn-success">Search</button>
+						</div>
+						<div class="btn-group mx-2">
+							<button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
 						</div>
 					</form>
 				</div>
-				<div class="col-12 mt-3">
+				<div class="col-2 offset-4 my-2 text-end">
+					<div class="form-floating">
+						<select onchange="document.documentElement.style.zoom = this.value;" class="form-select form-select-sm" id="zoom" placeholder="Zoom" aria-label="Zoom">
+							<option value="50%">50%</option>
+							<option value="75%">75%</option>
+							<option value="100%" selected>100%</option>
+						</select>
+						<label for="zoom">Zoom</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<h4 class="h4">COMPUTER TICKET REPORT</h4>
 					<table class="table border w-100 table-bordered" id="tickets">
 						<thead>
 							<tr>
@@ -155,40 +156,13 @@
 							</tr>
 							<tr>
 								<th:block th:each="count : ${#numbers.sequence(0, 2, 1)}">
-									<!-- <th:block th:each="reportTable : ${reportTables}"> -->
-										<th:block th:each="visitorName : ${visitorsName}">
-											<th th:text="${visitorName}" style="text-align: center;"></th>
-										</th:block>
-									<!-- </th:block> -->
+									<th:block th:each="visitorName : ${visitorsName}">
+										<th th:text="${visitorName}" style="text-align: center;"></th>
+									</th:block>
 								</th:block>
 							</tr>
-							<!--
-							<tr>
-								<th>Ticket</th>
-								<th:block th:each="visitorName : ${visitorsName}">
-									<th th:text="${visitorName}"></th>
-									<th>Rate</th>
-								</th:block>
-								<th>Total</th>
-							</tr>
-							-->
 						</thead>
 						<tbody>
-							<!-- // Interim check report -->
-							<!--
-							<th:block th:each="reportTable : ${reportTables}">
-								<tr>
-									<th:block th:each="ticket : ${reportTable}">
-										<td th:text="${ticket.ticketName}"></td>
-										<th:block th:each="group : ${ticket.group}">
-											<td th:text="${group.value.count}" style="text-align: right;"></td>
-											<td th:text="${group.value.price}" style="text-align: left;"></td>
-										</th:block>
-										<td th:text="${ticket.subTotal}"></td>
-									</th:block>
-								</tr>
-							</th:block>
-							-->
 							<th:block th:each="reportTable : ${reportTables}">
 								<tr>
 									<td></td>
@@ -197,16 +171,6 @@
 										<th:block th:each="ticket : ${tickets}">
 											<th:block th:each="group : ${ticket.group}">
 												<td th:text="${group.value.count}" style="text-align: right;"></td>
-												<!--
-												<td th:if="${group.value.count != 0}" th:text="${group.value.count}" style="text-align: right;"></td>
-												<td th:if="${group.value.count == 0}" style="text-align: right;">
-													<span th:text="${group.value.count}" class="ms-1 badge text-dark bg-warning"></span>
-												</td>
-												<td th:if="${group.value.price != 0}" th:text="${group.value.price}" style="text-align: left;"></td>
-												<td th:if="${group.value.price == 0}" style="text-align: left;">
-													<span th:text="${group.value.price}" class="ms-1 badge text-dark bg-warning"></span>
-												</td>
-												-->
 											</th:block>
 										</th:block>
 									</th:block>
@@ -216,27 +180,29 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td></td>
-								<td></td>
-								<td th:colspan="${visitorsName.size * 3}" style="text-align: right;"><h5 class="h5" style="font-weight: bold;">Grand Total:</h5></td>
+								<td th:colspan="${visitorsName.size * 3} + 2" style="text-align: right;"><h5 class="h5" style="font-weight: bold;"></h5></td>
 								<td style="text-align: left;"><h5 class="h5" style="font-weight: bold;">₹[[${grandTotal}]]</h5></td>
 							</tr>
 						</tfoot>
 					</table>
 				</div>
-				<div class="col-12 mt-3 d-flex" style="align-items: center;">
-					<div>
-						<h4 class="h4" style="font-weight: bold;">Grand Total: ₹[[${grandTotal}]]</h4>
-					</div>
+			</div>
+			<div class="row">
+				<div class="col-2 offset-2 text-start">
+					<h4 class="h4" style="font-weight: bold;">Grand Total</h4>
 				</div>
-				<div class="col-12 mt-3 d-flex justify-content-end">
-					<div class="me-5">
-						<h6 class="h6">Signature of Dealing Clerk</h6>
-					</div>
-					<div>
-						<h6 class="h6">Signature of Duty Officer</h6>
-					</div>
+				<div class="col-2 text-start">
+					<h4 class="h4" style="font-weight: bold;">₹[[${grandTotal}]]</h4>
 				</div>
+			</div>
+		</div>
+		<!-- Footer -->
+		<div class="fixed-bottom d-flex align-items-center justify-content-end">
+			<div class="m-5">
+				<h6 class="h6">Signature of Dealing Clerk</h6>
+			</div>
+			<div class="m-5">
+				<h6 class="h6">Signature of Duty Officer</h6>
 			</div>
 		</div>
 		<script type="text/javascript">
@@ -284,10 +250,11 @@
 					$("#navbarSupportedContent").parent().parent().css("visibility", "hidden");
 					$(document).find('form[action="/report/summary"]').each(function() {
 						$(this).find("input").prop("hidden", true);
-						// $(this).find("input").css("visibility", "hidden");
 						$(this).find("label").css("visibility", "hidden");
 						$(this).find("button").css("visibility", "hidden");
 					});
+					$('#zoom').css("visibility", "hidden");
+					$('label[for="zoom"]').css("visibility", "hidden");
 				});
 				$(window).on("afterprint", function() {
 					$("#navbarSupportedContent").css("visibility", "visible");
@@ -295,10 +262,11 @@
 					$("#navbarSupportedContent").parent().parent().css("visibility", "visible");
 					$(document).find('form[action="/report/summary"]').each(function() {
 						$(this).find("input").prop("hidden", false);
-						// $(this).find("input").css("visibility", "visible");
 						$(this).find("label").css("visibility", "visible");
 						$(this).find("button").css("visibility", "visible");
 					});
+					$('#zoom').css("visibility", "visible");
+					$('label[for="zoom"]').css("visibility", "visible");
 				});
 			});
 		</script>

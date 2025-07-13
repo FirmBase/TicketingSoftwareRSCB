@@ -16,8 +16,9 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 public class WebSecurityConfig {
 	// Configuring HttpSecurity
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-			return http.csrf(csrf -> csrf.disable())
+	public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
+			return http
+				.csrf(csrf -> csrf.disable())
 				.headers(headers -> headers
 					// .xssProtection(xss -> xss.disable())	// NEVER do this. Disabling XSS protection should never be in a real application.
 					.xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
@@ -28,12 +29,18 @@ public class WebSecurityConfig {
 						.maxAgeInSeconds(31536000)	// 1 year in seconds
 					)
 					// .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self';"))
-					.contentTypeOptions()
 				)
 				.authorizeHttpRequests(requests -> requests
-					.requestMatchers("/js/**", "/css/**","/images/**", "/lib/js/**", "/lib/css/**", "/lib/fonts/**", "/font-awesome/**").permitAll()
+					.requestMatchers("/js/**", "/css/**", "/images/**", "/icons/**", "/lib/js/**", "/lib/css/**", "/fonts/**", "/font-awesome/**")
+					.permitAll()
+				)
+				.authorizeHttpRequests(requests -> requests
 					.requestMatchers("/manage/**")
 					.hasRole("ADMIN")
+				)
+				.authorizeHttpRequests(requests -> requests
+					.requestMatchers("/home/**", "/report/**")
+					.hasAnyRole("ADMIN", "USER")
 				)
 				.authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
 				.formLogin(form -> {
@@ -47,8 +54,8 @@ public class WebSecurityConfig {
 				.logout(logout -> {
 					logout
 					.logoutSuccessUrl("/login")
-					.deleteCookies("JSESSIONID")
 					.invalidateHttpSession(true)
+					.deleteCookies("TicketingSoftwareRSCB")
 					.permitAll();
 				})
 				.build();

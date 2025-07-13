@@ -5,27 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rsc.bhopal.dtos.BillSummaryDateRange;
-import com.rsc.bhopal.dtos.TicketBillDTO;
 import com.rsc.bhopal.dtos.TicketBillSummaryDTO;
 import com.rsc.bhopal.dtos.TicketDetailsDTO;
-import com.rsc.bhopal.dtos.TicketSummaryDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.enums.GroupType;
-import com.rsc.bhopal.enums.VisitorsCategoryEnum;
-import com.rsc.bhopal.projections.TicketSummary;
+import com.rsc.bhopal.service.ApplicationConstantService;
 import com.rsc.bhopal.service.ParkingService;
-import com.rsc.bhopal.service.TicketBillService;
 import com.rsc.bhopal.service.TicketDetailsService;
 import com.rsc.bhopal.service.TicketSummaryService;
 import com.rsc.bhopal.service.VisitorTypeService;
@@ -48,12 +40,12 @@ public class HomeController {
 	private ParkingService parkingService;
 
 	@Autowired
-	private TicketBillService ticketBillService;
-
-	@Autowired
 	private TicketSummaryService ticketSummaryService;
 
-	@GetMapping(path = {"/","/home","/home/{variable}"} )
+	@Autowired
+	private ApplicationConstantService applicationConstantService;
+
+	@GetMapping(path = {"/", "/home", "/home/{variable}"} )
 	public String hello(Map<String, Object> attributes) {
 		List<TicketDetailsDTO> tickets = ticketDetails.getAllActiveTickets();
 		List<VisitorsTypeDTO> visitors = visitorDetails.getAllActiveVisitorTypes();
@@ -90,6 +82,10 @@ public class HomeController {
 				).collect(Collectors.toList()));
 
 			attributes.put("parkings", parkingService.getActiveParkingDetails());
+
+			attributes.put("bill_series", applicationConstantService.getBillSeries().getData());
+			attributes.put("bill_serial", applicationConstantService.getBillSerial().getData());
+			attributes.put("bill_serial_valid", applicationConstantService.checkBillSerialInRange());
 			redirectString = "employee/home";
 		}
 		return redirectString;

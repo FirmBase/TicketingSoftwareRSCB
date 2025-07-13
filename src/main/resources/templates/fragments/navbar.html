@@ -12,6 +12,8 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Manage</a>
 					<ul class="dropdown-menu">
+						<li><a class="dropdown-item" th:href="@{/ticket-search}">Ticket Search</a></li>
+						<li><hr class="dropdown-divider" /></li>
 						<li><a class="dropdown-item" th:href="@{/manage/serial}">Ticket Serial</a></li>
 						<li><a class="dropdown-item" th:href="@{/manage/tickets/add}">Ticket Master</a></li>
 						<li><a class="dropdown-item" th:href="@{/manage/groups/add}">Group / Combo Master</a></li>
@@ -29,7 +31,7 @@
 						<li><a class="dropdown-item" href="#" th:href="@{/home/summary}">Tickets Summary</a></li>
 						<li><a class="dropdown-item" href="#" th:href="@{/report/daily}">Tickets Report</a></li>
 						<li><a class="dropdown-item" href="#" th:href="@{/report/summary}">Tickets Report Summary</a></li>
-						<li><a class="dropdown-item" href="#" th:href="${'/report/year-wise/' + #dates.format(#dates.createNow(), 'yyyy')}">[[${#dates.format(#dates.createNow(), 'yyyy')}]] report</a></li>
+						<li><a class="dropdown-item" href="#" th:href="@{/report/detailed-report}">[[${#dates.format(#dates.createNow(), 'yyyy')}]] report</a></li>
 					</ul>
 				</li>
 			</ul>

@@ -19,186 +19,152 @@ import com.rsc.bhopal.dtos.TicketReportTableDTO;
 import com.rsc.bhopal.dtos.TicketsRatesMasterDTO;
 import com.rsc.bhopal.dtos.VisitorsTypeDTO;
 import com.rsc.bhopal.entity.TicketBillRow;
+import com.rsc.bhopal.projections.TicketDailyReport;
 import com.rsc.bhopal.repos.TicketBillRowRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class TicketBillRowService {
 	@Autowired
 	private TicketBillRowRepository ticketBillRowRepository;
 
 	public List<TicketBillRowDTO> getTicketBillRows() {
-		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getTicketBillRows().forEach(ticketBillRow -> {
-			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
-			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
-
-			TicketBillDTO ticketBillDTO = new TicketBillDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket(), ticketBillDTO);
-			ticketBillRowDTO.setTicketBillDTO(ticketBillDTO);
-
-			RSCUserDTO rscUserDTO = new RSCUserDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket().getGeneratedBy(), rscUserDTO);
-			ticketBillRowDTO.getTicketBillDTO().setGeneratedBy(rscUserDTO.getUsername());
-
-			BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBillDTO.getTicketPayload(), BillSummarize.class);
-			ticketBillDTO.setBillSummarize(billSummarize);
-
-			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
-			BeanUtils.copyProperties(ticketBillRow.getRate(), ticketsRatesMasterDTO);
-			ticketBillRowDTO.setTicketsRatesMasterDTO(ticketsRatesMasterDTO);
-
-			if (ticketBillRow.getRate().getTicketType() != null) {
-				TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getTicketType(), ticketDetailsDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setTicketType(ticketDetailsDTO);
-			}
-
-			if (ticketBillRow.getRate().getVisitorsType() != null) {
-				VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getVisitorsType(), visitorsTypeDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setVisitorsType(visitorsTypeDTO);
-			}
-
-			ticketBillRowDTOs.add(ticketBillRowDTO);
-		});
-		return ticketBillRowDTOs;
+		return ticketBillRowToTicketBillRowDTOs(ticketBillRowRepository.getTicketBillRows());
 	}
 
 	public List<TicketBillRowDTO> getTicketBillRowsAtDateTime(Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
-
-		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getTicketBillRowsAtDateTime(timestampStartDateTime, timestampEndDateTime).forEach(ticketBillRow -> {
-			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
-			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
-
-			TicketBillDTO ticketBillDTO = new TicketBillDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket(), ticketBillDTO);
-			ticketBillRowDTO.setTicketBillDTO(ticketBillDTO);
-
-			RSCUserDTO rscUserDTO = new RSCUserDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket().getGeneratedBy(), rscUserDTO);
-			ticketBillRowDTO.getTicketBillDTO().setGeneratedBy(rscUserDTO.getUsername());
-
-			BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBillDTO.getTicketPayload(), BillSummarize.class);
-			ticketBillDTO.setBillSummarize(billSummarize);
-
-			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
-			BeanUtils.copyProperties(ticketBillRow.getRate(), ticketsRatesMasterDTO);
-			ticketBillRowDTO.setTicketsRatesMasterDTO(ticketsRatesMasterDTO);
-
-			if (ticketBillRow.getRate().getTicketType() != null) {
-				TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getTicketType(), ticketDetailsDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setTicketType(ticketDetailsDTO);
-			}
-
-			if (ticketBillRow.getRate().getVisitorsType() != null) {
-				VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getVisitorsType(), visitorsTypeDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setVisitorsType(visitorsTypeDTO);
-			}
-
-			ticketBillRowDTOs.add(ticketBillRowDTO);
-		});
-		return ticketBillRowDTOs;
+		return ticketBillRowToTicketBillRowDTOs(ticketBillRowRepository.getTicketBillRowsAtDateTime(timestampStartDateTime, timestampEndDateTime));
 	}
 
 	public List<TicketBillRowDTO> getAllTicketsBillRow() {
-		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.findAll().forEach(ticketBillRow -> {
-			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
-			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
-
-			TicketBillDTO ticketBillDTO = new TicketBillDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket(), ticketBillDTO);
-			ticketBillRowDTO.setTicketBillDTO(ticketBillDTO);
-
-			RSCUserDTO rscUserDTO = new RSCUserDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket().getGeneratedBy(), rscUserDTO);
-			ticketBillRowDTO.getTicketBillDTO().setGeneratedBy(rscUserDTO.getUsername());
-
-			BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBillDTO.getTicketPayload(), BillSummarize.class);
-			ticketBillDTO.setBillSummarize(billSummarize);
-
-			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
-			BeanUtils.copyProperties(ticketBillRow.getRate(), ticketsRatesMasterDTO);
-			ticketBillRowDTO.setTicketsRatesMasterDTO(ticketsRatesMasterDTO);
-
-			if (ticketBillRow.getRate().getTicketType() != null) {
-				TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getTicketType(), ticketDetailsDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setTicketType(ticketDetailsDTO);
-			}
-
-			if (ticketBillRow.getRate().getVisitorsType() != null) {
-				VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getVisitorsType(), visitorsTypeDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setVisitorsType(visitorsTypeDTO);
-			}
-
-			ticketBillRowDTOs.add(ticketBillRowDTO);
-		});
-		return ticketBillRowDTOs;
+		return ticketBillRowToTicketBillRowDTOs(ticketBillRowRepository.findAll());
 	}
 
-	public List<BigInteger> getTicketsSerialDesc() {
-		return ticketBillRowRepository.getTicketsSerialDesc();
+	public List<BigInteger> getTicketsSerialDec() {
+		return ticketBillRowRepository.getTicketsSerialDec();
 	}
 
-	public List<BigInteger> getTicketsSerialAtDateTimeDesc(Date startDateTime, Date endDateTime) {
+	public List<BigInteger> getTicketsSerialDec(Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
-
-		return ticketBillRowRepository.getTicketsSerialAtDateTimeDesc(timestampStartDateTime, timestampEndDateTime);
+		return ticketBillRowRepository.getTicketsSerialDec(timestampStartDateTime, timestampEndDateTime);
 	}
-	
+
 	public List<TicketBillRowDTO> getCancelledStatusDesc(boolean cancelledStatus) {
-		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getCancelledStatusDesc(cancelledStatus).forEach(ticketBillRow -> {
-			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
-			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
-
-			TicketBillDTO ticketBillDTO = new TicketBillDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket(), ticketBillDTO);
-			ticketBillRowDTO.setTicketBillDTO(ticketBillDTO);
-
-			RSCUserDTO rscUserDTO = new RSCUserDTO();
-			BeanUtils.copyProperties(ticketBillRow.getGeneratedTicket().getGeneratedBy(), rscUserDTO);
-			ticketBillRowDTO.getTicketBillDTO().setGeneratedBy(rscUserDTO.getUsername());
-
-			BillSummarize billSummarize = CommonUtills.convertJSONToObject(ticketBillDTO.getTicketPayload(), BillSummarize.class);
-			ticketBillDTO.setBillSummarize(billSummarize);
-
-			TicketsRatesMasterDTO ticketsRatesMasterDTO = new TicketsRatesMasterDTO();
-			BeanUtils.copyProperties(ticketBillRow.getRate(), ticketsRatesMasterDTO);
-			ticketBillRowDTO.setTicketsRatesMasterDTO(ticketsRatesMasterDTO);
-
-			if (ticketBillRow.getRate().getTicketType() != null) {
-				TicketDetailsDTO ticketDetailsDTO = new TicketDetailsDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getTicketType(), ticketDetailsDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setTicketType(ticketDetailsDTO);
-			}
-
-			if (ticketBillRow.getRate().getVisitorsType() != null) {
-				VisitorsTypeDTO visitorsTypeDTO = new VisitorsTypeDTO();
-				BeanUtils.copyProperties(ticketBillRow.getRate().getVisitorsType(), visitorsTypeDTO);
-				ticketBillRowDTO.getTicketsRatesMasterDTO().setVisitorsType(visitorsTypeDTO);
-			}
-
-			ticketBillRowDTOs.add(ticketBillRowDTO);
-		});
-		return ticketBillRowDTOs;
+		return ticketBillRowToTicketBillRowDTOs(ticketBillRowRepository.getCancelledStatusDec(cancelledStatus));
 	}
 
 	public List<TicketBillRowDTO> getCancelledStatusAtDateTimeDesc(Date startDateTime, Date endDateTime, boolean cancelledStatus) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
+		return ticketBillRowToTicketBillRowDTOs(ticketBillRowRepository.getCancelledStatusDec(timestampStartDateTime, timestampEndDateTime, cancelledStatus));
+	}
 
+	// Single Type Ticket
+	public List<TicketReportTableDTO> getOverallTicketSales() {
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		ticketBillRowRepository.getOverallTicketSales().forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+
+	// Combo Type Ticket
+	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName) {
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+
+	// Single Type Ticket
+	public List<TicketReportTableDTO> getOverallTicketSales(Date startDateTime, Date endDateTime) {
+		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
+		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
+
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		ticketBillRowRepository.getOverallTicketSales(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+
+	// Combo Type Ticket
+	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName, Date startDateTime, Date endDateTime) {
+		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
+		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
+
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+
+	/*
+	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName) {
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		// Single Type Ticket
+		ticketBillRowRepository.getOverallTicketSales().forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		// Combo Type Ticket
+		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+
+	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName, Date startDateTime, Date endDateTime) {
+		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
+		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
+
+		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
+		// Single Type Ticket
+		ticketBillRowRepository.getOverallTicketSales(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		// Combo Type Ticket
+		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
+			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
+			ticketReportTableDTOs.add(ticketReportTableDTO);
+		});
+		return ticketReportTableDTOs;
+	}
+	*/
+
+	public List<TicketDailyReport> getDetailedReport(Short year) {
+		return ticketBillRowRepository.getDetailedReport(year);
+	}
+
+	public List<TicketDailyReport> getDetailedReport(Date startDateTime, Date endStartTime) {
+		return ticketBillRowRepository.getDetailedReport(new java.sql.Date(startDateTime.getTime()), new java.sql.Date(endStartTime.getTime()));
+	}
+
+	private List<TicketBillRowDTO> ticketBillRowToTicketBillRowDTOs(List<TicketBillRow> ticketBillRows) {
 		List<TicketBillRowDTO> ticketBillRowDTOs = new ArrayList<TicketBillRowDTO>();
-		ticketBillRowRepository.getCancelledStatusAtDateTimeDesc(timestampStartDateTime, timestampEndDateTime, cancelledStatus).forEach(ticketBillRow -> {
+		ticketBillRows.forEach(ticketBillRow -> {
 			TicketBillRowDTO ticketBillRowDTO = new TicketBillRowDTO();
 			BeanUtils.copyProperties(ticketBillRow, ticketBillRowDTO);
 
@@ -232,28 +198,5 @@ public class TicketBillRowService {
 			ticketBillRowDTOs.add(ticketBillRowDTO);
 		});
 		return ticketBillRowDTOs;
-	}
-
-	public List<TicketReportTableDTO> getTicketsReportTable() {
-		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getTicketsReportTable().forEach(ticketReportTable -> {
-			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
-			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
-			ticketReportTableDTOs.add(ticketReportTableDTO);
-		});
-		return ticketReportTableDTOs;
-	}
-
-	public List<TicketReportTableDTO> getTicketsReportTableAtDateTime(Date startDateTime, Date endDateTime) {
-		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
-		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
-
-		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getTicketsReportTableAtDateTime(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
-			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
-			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
-			ticketReportTableDTOs.add(ticketReportTableDTO);
-		});
-		return ticketReportTableDTOs;
 	}
 }

@@ -2,12 +2,14 @@ package com.rsc.bhopal.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.rsc.bhopal.annotations.RSCLog;
 import com.rsc.bhopal.dtos.ApplicationConstantDTO;
 import com.rsc.bhopal.dtos.PrintAdjustDTO;
 import com.rsc.bhopal.entity.ApplicationConstant;
@@ -51,11 +53,84 @@ public class ApplicationConstantService {
 		return applicationConstantDTO;
 	}
 
+	@RSCLog(desc = "Change Ticket Serial")
 	public void replaceTicketSerial(long id, String ticketSerial) {
 		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
 		if (applicationConstantOptional.isPresent()) {
 			ApplicationConstant applicationConstant = applicationConstantOptional.get();
 			applicationConstant.setData(ticketSerial);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSeries() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSeries().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	@RSCLog(desc = "Change Bill Series")
+	public void replaceBillSeries(long id, String billSeries) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSeries);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerialStart() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerialStart().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	@RSCLog(desc = "Change Bill Serial start range")
+	public void replaceBillSerialStart(long id, String billSerialStart) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerialStart);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerialEnd() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerialEnd().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	@RSCLog(desc = "Change Bill Serial end range")
+	public void replaceBillSerialEnd(long id, String billSerialEnd) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerialEnd);
+			applicationConstantRepository.save(applicationConstant);
+		}
+	}
+
+	public ApplicationConstantDTO getBillSerial() {
+		ApplicationConstantDTO applicationConstantDTO = new ApplicationConstantDTO();
+		applicationConstantRepository.getAllBillSerial().forEach(applicationConstant -> {
+			BeanUtils.copyProperties(applicationConstant, applicationConstantDTO);
+		});
+		return applicationConstantDTO;
+	}
+
+	@RSCLog(desc = "Change Bill Serial next serial")
+	public void replaceBillSerial(long id, String billSerial) {
+		Optional<ApplicationConstant> applicationConstantOptional = applicationConstantRepository.findById(id);
+		if (applicationConstantOptional.isPresent()) {
+			ApplicationConstant applicationConstant = applicationConstantOptional.get();
+			applicationConstant.setData(billSerial);
 			applicationConstantRepository.save(applicationConstant);
 		}
 	}
@@ -70,6 +145,7 @@ public class ApplicationConstantService {
 		return printAdjustDTOs;
 	}
 
+	@RSCLog(desc = "Change print coordinates")
 	public void setAllCurrentPrintCoordinates(List<PrintAdjustDTO> printAdjustDTOs) {
 		printAdjustDTOs.forEach(printAdjustDTO -> {
 			Optional<ApplicationConstant> applicationConstant = applicationConstantRepository.findById(printAdjustDTO.getId());
@@ -91,5 +167,18 @@ public class ApplicationConstantService {
 				log.debug("Exception converting " + printAdjustDTO + " to JSON: " + ex.getMessage());
 			}
 		});
+	}
+
+	public boolean checkBillSerialInRange() {
+		boolean status = false;
+		try {
+			status = (new BigInteger(getBillSerialStart().getData()).compareTo(new BigInteger(getBillSerial().getData())) != 1)
+				&&
+				(new BigInteger(getBillSerialEnd().getData()).compareTo(new BigInteger(getBillSerial().getData())) != -1);
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return status;
 	}
 }

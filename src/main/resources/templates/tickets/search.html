@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Recent Tickets</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link
+			th:href="@{/lib/css/GoogleFonts.css}"
+			rel="stylesheet">
+		<link
+			th:href="@{/lib/css/bootstrap.min.css}"
+			rel="stylesheet"
+			integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+			crossorigin="anonymous">
+
+
+		<script th:src="@{/lib/js/jquery-3.7.1.js}"
+			integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+			crossorigin="anonymous"></script>
+			<link th:href="@{/font-awesome/css/fontawesome.min.css}" rel="stylesheet" />
+			<link th:href="@{/font-awesome/css/solid.css}" rel="stylesheet" />
+			<!-- <script th:src="@{/lib/js/c634b3cef4.js}" crossorigin="anonymous"></script> -->
+		<script th:src="@{/lib/js/dataTables.min.js}"
+			type="text/javascript"></script>
+		<script
+			th:src="@{/lib/js/dataTables.bootstrap5.js}"
+			type="text/javascript"></script>
+		<link
+			th:href="@{/lib/css/dataTables.bootstrap5.css}"
+			rel="stylesheet">
+		<!-- <script type="text/javascript" th:src="@{/js/billSummary.js}"></script> -->
+
+		<script
+			th:src="@{/lib/js/popper.min.js}"
+			integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+			crossorigin="anonymous"></script>
+		<script
+			th:src="@{/lib/js/bootstrap.min.js}"
+			integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+			crossorigin="anonymous"></script>
+
+
+		<link th:href="@{/css/standard.css}" rel="stylesheet" />
+
+		<style type="text/css">
+			td small {
+				font-size: 10px
+			}
+
+			.mw-250 {
+				max-width: 250px;
+			}
+			.table>:not(caption)>*>*{
+			color:inherit;
+			}
+		</style>
+		<script th:inline="javascript" type="text/javascript">
+			function switchSearchInput(field) {
+				const elements = [
+					document.getElementById("search_date"),
+					document.getElementById("search_date_range_from"),
+					document.getElementById("search_date_range_to"),
+					document.getElementById("bill_series"),
+					document.getElementById("bill_serial")
+				];
+				if (field.value === "date") {
+					[false, true, true, true, true].forEach((state, index) => {
+						elements[index].disabled = state;
+					});
+				}
+				else if (field.value === "date-range") {
+					[true, false, false, true, true].forEach((state, index) => {
+						elements[index].disabled = state;
+					});}
+				else if (field.value === "serial") {
+					[true, true, true, false, false].forEach((state, index) => {
+						elements[index].disabled = state;
+					});
+				}
+			}
+			function inflictSeriesConstraint(e) {
+				if (e.key.match(/[a-zA-Z]$/) == null) {
+					return false;
+				}
+				else {
+					return true;
+				}
+				return true;
+			}
+			function limitSeriesLength(e) {
+				e.target.value = e.target.value.substring(0, 1).toUpperCase();
+			}
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var tableConfig = {
+					aaSorting: [],	//Default sorting false
+					info: true,
+					ordering: true,
+					paging: true,
+					searching: true,
+					responsive: false,
+					destroy: false
+				};
+				new DataTable('#tickets', tableConfig);
+			});
+		</script>
+	</head>
+	<body class="w-100 vh-100">
+		<div th:replace="~{fragments/navbar :: navbar}"></div>
+		<div th:replace="~{fragments/toast :: toast}"></div>
+		<div class="container-fluid d-flex justify-content-center align-items-center w-100" style="position: fixed; height: 90%;">
+			<form action="" method="post" enctype="application/x-www-form-urlencoded" class="w-100">
+				<div class="row">
+					<div class="col-4 m-1"></div>
+					<div class="col-1 m-1 d-flex align-items-center justify-content-start">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="searchBy" id="search_by_date_select" value="date" onchange="switchSearchInput(this);" required />
+							<label class="form-check-label" for="search_by_date_select">Date</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating w-100 mx-1">
+							<input class="form-control" type="date" name="ticketAt" id="search_date" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="" required />
+							<label for="search_date">Date</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 m-1"></div>
+					<div class="col-1 m-1 d-flex align-items-center justify-content-start">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="searchBy" id="search_by_date_range_select" value="date-range" onchange="switchSearchInput(this);" required />
+							<label class="form-check-label" for="search_by_date_range_select">Range</label>
+						</div>
+					</div>
+					<div class="col-3 m-1 d-flex align-items-center justify-content-end">
+						<div class="form-floating w-100 mx-1">
+							<input class="form-control" type="date" name="ticketFrom" id="search_date_range_from" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="" required />
+							<label for="search_date_range_from">Date</label>
+						</div>
+						<div class="form-floating w-100 mx-1">
+							<input class="form-control" type="date" name="ticketTo" id="search_date_range_to" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="" required />
+							<label for="search_date_range_to">Date</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-4 m-1"></div>
+					<div class="col-1 m-1 d-flex align-items-center justify-content-start">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="searchBy" id="search_by_serial_select" value="serial" onchange="switchSearchInput(this);" required />
+							<label class="form-check-label" for="search_by_serial_select">Serial</label>
+						</div>
+					</div>
+					<div class="col-3 m-1 d-flex align-items-center justify-content-between">
+						<div class="form-floating w-50 mx-1">
+							<input class="form-control" type="text" name="billSeries" id="bill_series" placeholder="" value=""  onkeypress="return inflictSeriesConstraint(event);" onkeyup="limitSeriesLength(event);" required />
+							<label for="bill_series">Series</label>
+						</div>
+						<div class="form-floating w-100 mx-1">
+							<input class="form-control" type="number" name="billSerial" id="bill_serial" placeholder="" value="" required />
+							<label for="bill_serial">Serial</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-5 m-1"></div>
+					<div class="col-2 m-1">
+						<div class="btn-group w-100">
+							<button class="btn btn-success" type="submit">Search</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script th:inline="javascript" type="text/javascript">
+			[].forEach.call(document.getElementsByTagName("form"), function(element) {
+				element.reset();
+			});
+		</script>
+	</body>
+</html>

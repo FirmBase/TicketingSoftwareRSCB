@@ -19,30 +19,29 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class ServiceLogAspect {
-	
 	@Autowired
 	private ActivityLogService logService;
-	
-	//@Before(value = "execution (* com.rsc.bhopal.service.*.*(..))")
+
+	// @Before(value = "execution (* com.rsc.bhopal.service.*.*(..))")
 	@Before("@annotation(com.rsc.bhopal.annotations.RSCLog)")
 	public void beforeAdvice(JoinPoint joinPoint) throws JsonProcessingException, NoSuchMethodException, SecurityException {
-		  MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-		  String desc = ms.getMethod().getAnnotation(RSCLog.class).desc();		  
-	      log.debug("desc {} "+desc);	        
-		  ActivityLogDTO dto = new  ActivityLogDTO();
-				  dto.setActionBy("admin");
-				  dto.setMessage(desc);
-				  dto.setStatus(true);				  
-				  LogPayload payload=new LogPayload();
-				  payload.setClassName(joinPoint.getTarget().getClass().getSimpleName());
-				  payload.setFunctionName(joinPoint.getSignature().getName());
-				  payload.setArgs(joinPoint.getArgs());		              
-				  dto.setPayload(payload);				  
+		MethodSignature ms = (MethodSignature) joinPoint.getSignature();
+		String desc = ms.getMethod().getAnnotation(RSCLog.class).desc();
+		log.debug("desc {} "+desc);
+		ActivityLogDTO dto = new ActivityLogDTO();
+				dto.setActionBy("admin");
+				dto.setMessage(desc);
+				dto.setStatus(true);
+				LogPayload payload=new LogPayload();
+				payload.setClassName(joinPoint.getTarget().getClass().getSimpleName());
+				payload.setFunctionName(joinPoint.getSignature().getName());
+				payload.setArgs(joinPoint.getArgs());
+				dto.setPayload(payload);
 		try {
 			logService.log(dto);
-		}catch(Exception ex) {
+		}
+		catch(Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
 }

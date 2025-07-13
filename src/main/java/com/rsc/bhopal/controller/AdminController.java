@@ -1,6 +1,5 @@
 package com.rsc.bhopal.controller;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,13 +65,9 @@ public class AdminController {
 
 	@GetMapping("/rates")
 	public String rates(Map<String, Object> attributes) {
-
 		TicketRateByGroup ticketRateByGroup = new TicketRateByGroup();
-
 		List<VisitorsTypeDTO> vistoryList = visitorTypeService.getVisitorTypeByGroupType(GroupType.SINGLE);
-
 		List<TicketDetailsDTO> tickets = ticketDetailsService.getAllActiveTickets();
-
 		for(TicketDetailsDTO ticket: tickets ){
 			Map<Long, Float> prices = new HashMap<Long, Float>();
 			TicketRate rate = new TicketRate();

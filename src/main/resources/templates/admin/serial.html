@@ -29,53 +29,213 @@
 				border-collapse: expression('separate', cellSpacing = '10px');
 			}
 		</style>
+		<script th:inline="javascript" type="text/javascript">
+			function inflictSeriesConstraint(e) {
+				if (e.key.match(/[a-zA-Z]$/) == null) {
+					return false;
+				}
+				else {
+					return true;
+				}
+				return true;
+			}
+			function limitSeriesLength(e) {
+				e.target.value = e.target.value.substring(0, 1).toUpperCase();
+			}
+			function minimumSerialFieldNumber(field) {
+				elementsStatus = [];
+				[].forEach.call(field.getElementsByTagName("input"), function(element) {
+					elementsStatus.push(element.value.length > 0);
+				});
+				const s = elementsStatus.filter(value => value === true).length >= 9;
+				if (s) {
+					showToast("Serial", "Requesting changes...", true);
+				}
+				else {
+					showToast("Unfulfilled requirements", "All field should be set.", false);
+				}
+				return s;
+			}
+		</script>
 	</head>
 	<body>
 		<div th:replace="~{fragments/navbar :: navbar}"></div>
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
-			<div class="row g-2">
-				<div class="col-12 mt-3">
-					<form action="" method="post" enctype="application/x-www-form-urlencoded">
-						<table>
-							<thead>
-								<th></th>
-								<th></th>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<label for="previous_serial">Original Serial:</label>
-									</td>
-									<td>
-										<input class="form-control" id="previous_serial" type="number" name="previous-serial" th:value="${serial}" readonly disabled />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<label for="serial_input">New Serial:</label>
-									</td>
-									<td>
-										<input class="form-control" id="serial_input" type="number" name="serial" value="" required />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<label for="serial_button">Action:</label>
-									</td>
-									<td>
-										<button class="btn btn-primary" id="serial_button" type="submit">Change serial</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</form>
+			<form th:action="@{serial/ticket-serial}" method="post" enctype="application/x-www-form-urlencoded">
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<h3 class="h3">Ticket Serial</h3>
+					</div>
 				</div>
-			</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="previous_ticket_serial" type="number" name="previous-ticket-serial" th:value="${ticket_serial}" readonly disabled />
+							<label for="previous_ticket_serial">Original Serial:</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="ticket_serial_input" type="number" name="ticket-serial" value="" placeholder="New Serial" required />
+							<label for="ticket_serial_input">New Serial:</label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3"></div>
+					<div class="col-6 text-end m-1">
+						<div class="form-floating">
+							<button class="btn btn-primary" id="ticket_serial_button" type="submit">Change</button>
+							<label for="ticket_serial_button"></label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<input class="form-control" id="ticket_serial_id" type="hidden" name="ticket-serial-id" th:value="${ticket_serial_id}" />
+						<label for="ticket_serial_id"></label>
+					</div>
+				</div>
+			</form>
+			<form th:action="@{serial/bill-series}" method="post" enctype="application/x-www-form-urlencoded">
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<h3 class="h3">Series</h3>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="previous_bill_series" type="text" name="previous-bill-series" th:value="${bill_series}" readonly disabled />
+							<label for="previous_bill_series">Original Series:</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="bill_series_input" type="text" name="bill-series" value="" placeholder="New series" onkeypress="return inflictSeriesConstraint(event);" onkeyup="limitSeriesLength(event);" required />
+							<label for="bill_series_input">New Series:</label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1 text-end">
+						<div class="form-floating">
+							<button class="btn btn-primary" id="bill_series_button" type="submit">Change</button>
+							<label for="bill_series_button"></label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="bill_series_id" type="hidden" name="bill-series-id" th:value="${bill_series_id}" />
+							<label for="bill_series_id"></label>
+						</div>
+					</div>
+				</div>
+			</form>
+			<form th:action="@{serial/bill-serial}" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return minimumSerialFieldNumber(this);">
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<h3 class="h3">Serial</h3>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<div class="form-floating">
+							<input class="form-control" id="bill_serial_id" type="hidden" name="bill-serial-id" th:value="${bill_serial_id}" />
+							<label for="bill_serial_id"></label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="previous_bill_serial" type="number" name="previous-bill-serial" th:value="${bill_serial}" readonly />
+							<label for="previous_bill_serial">Current:</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="bill_serial_input" type="number" name="bill-serial" placeholder="Current serial" value="" required />
+							<label for="bill_serial_input">New:</label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="bill_serial_start_id" type="hidden" name="bill-serial-start-id" th:value="${bill_serial_start_id}" />
+							<label for="bill_serial_start_id"></label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="previous_bill_serial_start" type="number" name="previous-bill-serial-start" th:value="${bill_serial_start}" readonly />
+							<label for="previous_bill_serial_start">Start:</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="bill_serial_start_input" type="number" name="bill-serial-start" placeholder="Start serial" value="" required />
+							<label for="bill_serial_start_input">New:</label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="bill_serial_end_id" type="hidden" name="bill-serial-end-id" th:value="${bill_serial_end_id}" />
+							<label for="bill_serial_end_id"></label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="previous_bill_serial_end_input" type="number" name="previous-bill-serial-end" th:value="${bill_serial_end}" readonly />
+							<label for="previous_bill_serial_end_input">End:</label>
+						</div>
+					</div>
+					<div class="col-3 m-1">
+						<div class="form-floating">
+							<input class="form-control text-end" id="bill_serial_end_input" type="number" name="bill-serial-end" placeholder="End serial" value="" required />
+							<label for="bill_serial_end_input">New:</label>
+						</div>
+					</div>
+				</div>
+				<div class="row my-1">
+					<div class="col-3 m-1"></div>
+					<div class="col-6 m-1">
+						<div class="form-floating text-end">
+							<button class="btn btn-primary btn-lg" id="bill_serial_button" type="submit">Change</button>
+							<label for="bill_serial_button"></label>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
 		<script type="text/javascript">
 			[].forEach.call(document.getElementsByTagName("table"), function(table) {
 				var dataTable = new DataTable(table, {
+					aaSorting: [],	// Default sorting false
 					info: false,
 					ordering: false,
 					paging: false,

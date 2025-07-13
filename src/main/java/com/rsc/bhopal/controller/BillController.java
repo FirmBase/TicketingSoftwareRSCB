@@ -34,7 +34,7 @@ public class BillController {
 	@Autowired
 	private TicketBillService ticketBillService;
 
-	@PostMapping("/calculate")
+	@PostMapping(path = "/calculate")
 	public @ResponseBody ResponseEntity<?> calculateBill(TicketSelectorDTO ticketSelector) {
 		log.debug("Ticket Selector " + ticketSelector);
 		try {
@@ -67,12 +67,12 @@ public class BillController {
 
 	}
 
-	@PostMapping("/print")
-	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user,RedirectAttributes redirectAttributes) throws JsonProcessingException {
+	@PostMapping(path = "/print")
+	public String generateBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user, RedirectAttributes redirectAttributes) throws JsonProcessingException {
 		ResponseMessage responseMessage = null;
-		log.debug("Ticket Selector " + ticketSelector);
+		Long billId = 0l;
 		try {
-			ticketBillService.saveAndPrintTicket(ticketSelector, user);
+			billId = ticketBillService.saveAndPrintTicket(ticketSelector, user);
 			responseMessage = ResponseMessage.builder().status(true).message("Ticket Printed").build();
 		}
 		catch(TicketRateNotMaintainedException ex) {
@@ -81,6 +81,25 @@ public class BillController {
 			responseMessage = ResponseMessage.builder().status(false).message(ex.getMessage()).build();
 		}
 		redirectAttributes.addFlashAttribute("message", CommonUtills.convertToJSON(responseMessage));
-		return "redirect:/home";
+
+		return ticketSelector.getPrintBill() ? "redirect:../print/generate-pdf?bill-id=" + billId : "redirect:../home";
+	}
+
+	@PostMapping(path = "print-bill")
+	public String printBill(@ModelAttribute TicketSelectorDTO ticketSelector, Principal user, RedirectAttributes redirectAttributes) throws JsonProcessingException {
+		ResponseMessage responseMessage = null;
+		log.debug("Ticket Selector " + ticketSelector);
+		Long billId = 0l;
+		try {
+			billId = ticketBillService.saveAndPrintTicket(ticketSelector, user);
+			responseMessage = ResponseMessage.builder().status(true).message("Ticket Printed").build();
+		}
+		catch(TicketRateNotMaintainedException ex) {
+			log.error(ex.getMessage());
+			ex.printStackTrace();
+			responseMessage = ResponseMessage.builder().status(false).message(ex.getMessage()).build();
+		}
+		redirectAttributes.addFlashAttribute("message", CommonUtills.convertToJSON(responseMessage));
+		return (billId == null) || billId.equals(0l) ? "redirect:." : "redirect:." + "?bill-id=" + billId;
 	}
 }

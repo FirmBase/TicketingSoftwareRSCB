@@ -2,9 +2,6 @@ package com.rsc.bhopal.entity;
 
 import java.util.Date;
 
-import org.hibernate.annotations.Fetch;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rsc.bhopal.enums.BillType;
 
 import jakarta.persistence.Column;
@@ -24,53 +21,50 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "RSC_TS_TICKET_RATE_MASTER")
-public class TicketsRatesMaster {	
+public class TicketsRatesMaster {
 	@Id
 	@Column(name = "ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id; 
-		
+
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "TICKET_ID",referencedColumnName = "ID")
-	private TicketDetails  ticketType;
-	
+	@JoinColumn(name = "TICKET_ID", referencedColumnName = "ID")
+	private TicketDetails ticketType;
+
 	@ManyToOne
-	@JoinColumn(name = "VISITOR_ID",referencedColumnName = "ID")
-	private VisitorsType  visitorsType;
-	
+	@JoinColumn(name = "VISITOR_ID", referencedColumnName = "ID")
+	private VisitorsType visitorsType;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PARKING_DET_ID",referencedColumnName = "ID")
-	private ParkingDetails  parkingDetails;
-		
+	@JoinColumn(name = "PARKING_DET_ID", referencedColumnName = "ID")
+	private ParkingDetails parkingDetails;
+
 	@Column(name = "PRICE")
 	private Float price;
-	
-	
+
 	@Column(name = "IS_ACTIVE")
 	private Boolean isActive;
-	
+
 	@Column(name = "REVISION_NO")
 	private Integer revisionNo;
-	
+
 	@Column(name = "REVISED_AT")
 	private Date revisedAt;
-	
+
 	@OneToOne(fetch =FetchType.LAZY)
-	@JoinColumn(name = "REVISED_FROM",referencedColumnName = "ID")
-    private TicketsRatesMaster oldRateMaster;
-	
-	
+	@JoinColumn(name = "REVISED_FROM", referencedColumnName = "ID")
+	private TicketsRatesMaster oldRateMaster;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "BILL_TYPE")
 	private BillType billType;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "REVISED_BY",referencedColumnName = "ID")
-    private RSCUser user;
+	@JoinColumn(name = "REVISED_BY", referencedColumnName = "ID")
+	private RSCUser user;
 
 	@Override
 	public String toString(){
-		return "NOT IMPLEMENTED";
-		// return String.format("TicketsRatesMaster{ %d }", Math.round(price));
+		return "Not implemented.";
 	}
 }
