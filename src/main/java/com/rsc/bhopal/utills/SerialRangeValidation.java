@@ -56,9 +56,4 @@ public class SerialRangeValidation {
 				&&
 				((sortedHashMap.get(5).getKey() == SerialObjects.PREVIOUS_END_SERIAL) || (sortedHashMap.get(5).getKey() == SerialObjects.END_SERIAL));
 	}
-
-	public static void main(String[] args) {
-		SerialRangeValidation serialRangeValidation = new SerialRangeValidation(100, 10, 1000, "200", "20", "2000");
-		System.out.println(serialRangeValidation.validate());
-	}
 }

@@ -62,9 +62,4 @@ public class TicketsRatesMaster {
 	@ManyToOne
 	@JoinColumn(name = "REVISED_BY", referencedColumnName = "ID")
 	private RSCUser user;
-
-	@Override
-	public String toString(){
-		return "Not implemented.";
-	}
 }

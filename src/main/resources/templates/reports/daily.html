@@ -89,7 +89,7 @@
 					<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
 				</div>
 				<div class="col-4 d-flex align-items-center justify-content-end">
-					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">Start Tkt No. [[${ticketSerials.get(ticketSerials.size() - 1)}]] <!-- [[${reportTable.get(0).group[0].ticketSerial}]] --></h5>
+					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">Start Tkt No. [[${ticketSerials.get(ticketSerials.size() - 1)}]]</h5>
 					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">End Tkt No. [[${ticketSerials[0]}]]</h5>
 				</div>
 			</div>
@@ -132,22 +132,22 @@
 							<tr>
 								<th rowspan="2">Serial No.</th>
 								<th rowspan="2">Ticket</th>
-								<th:block th:each="visitorName : ${visitorsName}">
+								<th:block th:each="visitorName : ${singleVisitorsName}">
 									<th th:text="${visitorName}" colspan="2" style="text-align: center;"></th>
 								</th:block>
 								<th rowspan="2">Total Amount</th>
 							</tr>
 							<tr>
-								<th:block th:each="visitorName : ${visitorsName}">
+								<th:block th:each="visitorName : ${singleVisitorsName}">
 									<th style="text-align: right;">Count</th>
 									<th style="text-align: left;">Rate</th>
 								</th:block>
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="ticket : ${reportTable}">
+							<th:block th:each="ticket : ${singleTicketsReportTable}">
 								<tr>
-									<td></td>
+									<td><!-- Serial No. --></td>
 									<td th:text="${ticket.ticketName}"></td>
 									<th:block th:each="group : ${ticket.group}">
 										<td th:text="${group.value.count}" style="text-align: right;"></td>
@@ -156,10 +156,23 @@
 									<td style="text-align: right;">₹[[${ticket.subTotal}]]</td>
 								</tr>
 							</th:block>
+							<th:block th:each="ticket : ${comboTicketsReportTable}">
+								<tr>
+									<td><!-- Serial No. --></td>
+									<td th:text="${ticket.ticketName}"></td>
+									<td th:text="${ticket.ticketCount}" style="text-align: right;"></td>
+									<td style="text-align: left;">₹[[${ticket.subTotal}]]</td>
+									<!-- <td th:colspan="${(singleVisitorsName.size * 2) - 2}"></td> -->
+									<td th:each="count : ${#numbers.sequence(0, singleVisitorsName.size * 2, 2)}"></td>
+									<td style="text-align: right;">₹[[${ticket.subTotal}]]</td>
+								</tr>
+							</th:block>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td th:colspan="${visitorsName.size * 2} + 2" style="text-align: right;"><h5 class="h5" style="font-weight: bold;"></h5></td>
+								<td th:colspan="${(singleVisitorsName.size * 2) + 2}" style="text-align: right;">
+									<h5 class="h5" style="font-weight: bold;"></h5>
+								</td>
 								<td style="text-align: right;"><h5 class="h5" style="font-weight: bold;">₹[[${grandTotal}]]</h5></td>
 							</tr>
 						</tfoot>
@@ -185,53 +198,51 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			$(document).ready(function() {
-				var tableConfig = {
-					"aaSorting" : [], // Default sorting false
-					info : false,
-					ordering : false,
-					paging : false,
-					searching : false,
-					responsive : false,
-					destroy : false,
-					fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-						var index = iDisplayIndexFull + 1;
-						$("td:first", nRow).html(index);
-						return nRow;
-					},
-					stripeClasses: [],
-					footer: true
-				};
-				new DataTable('#tickets', tableConfig);
-			});
-		</script>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$(window).on("beforeprint", function() {
-					$("#navbarSupportedContent").css("visibility", "hidden");
-					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "hidden");
-					$("#navbarSupportedContent").parent().parent().css("visibility", "hidden");
-					$(document).find('form[action="/report/daily"]').each(function() {
-						$(this).find("input").prop("hidden", true);
-						$(this).find("label").css("visibility", "hidden");
-						$(this).find("button").css("visibility", "hidden");
-					});
-					$('#zoom').css("visibility", "hidden");
-					$('label[for="zoom"]').css("visibility", "hidden");
-				});
-				$(window).on("afterprint", function() {
-					$("#navbarSupportedContent").css("visibility", "visible");
-					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "visible");
-					$("#navbarSupportedContent").parent().parent().css("visibility", "visible");
-					$(document).find('form[action="/report/daily"]').each(function() {
-						$(this).find("input").prop("hidden", false);
-						$(this).find("label").css("visibility", "visible");
-						$(this).find("button").css("visibility", "visible");
-					});
-					$('#zoom').css("visibility", "visible");
-					$('label[for="zoom"]').css("visibility", "visible");
-				});
-			});
+			var tableConfig = {
+				"aaSorting" : [], // Default sorting false
+				info : false,
+				ordering : false,
+				paging : false,
+				searching : false,
+				responsive : false,
+				destroy : false,
+				fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+					var index = iDisplayIndexFull + 1;
+					$("td:first", nRow).html(index);
+					return nRow;
+				},
+				stripeClasses: [],
+				footer: true
+			};
+			new DataTable('#tickets', tableConfig);
 		</script>
 	</body>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(window).on("beforeprint", function() {
+				$("#navbarSupportedContent").css("visibility", "hidden");
+				$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "hidden");
+				$("#navbarSupportedContent").parent().parent().css("visibility", "hidden");
+				$(document).find('form[action="/report/daily"]').each(function() {
+					$(this).find("input").prop("hidden", true);
+					$(this).find("label").css("visibility", "hidden");
+					$(this).find("button").css("visibility", "hidden");
+				});
+				$('#zoom').css("visibility", "hidden");
+				$('label[for="zoom"]').css("visibility", "hidden");
+			});
+			$(window).on("afterprint", function() {
+				$("#navbarSupportedContent").css("visibility", "visible");
+				$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "visible");
+				$("#navbarSupportedContent").parent().parent().css("visibility", "visible");
+				$(document).find('form[action="/report/daily"]').each(function() {
+					$(this).find("input").prop("hidden", false);
+					$(this).find("label").css("visibility", "visible");
+					$(this).find("button").css("visibility", "visible");
+				});
+				$('#zoom').css("visibility", "visible");
+				$('label[for="zoom"]').css("visibility", "visible");
+			});
+		});
+	</script>
 </html>

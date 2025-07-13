@@ -14,7 +14,6 @@ import com.rsc.bhopal.dtos.ApplicationConstantDTO;
 import com.rsc.bhopal.dtos.ResponseMessage;
 import com.rsc.bhopal.service.ApplicationConstantService;
 import com.rsc.bhopal.utills.CommonUtills;
-import com.rsc.bhopal.utills.SerialRangeValidation;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -24,7 +24,6 @@ import com.rsc.bhopal.repos.TicketBillRowRepository;
 import com.rsc.bhopal.utills.CommonUtills;
 
 import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
 public class TicketBillRowService {
@@ -77,9 +76,9 @@ public class TicketBillRowService {
 	}
 
 	// Combo Type Ticket
-	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName) {
+	public List<TicketReportTableDTO> getOverallTicketSales(long visitorId, String visitorName) {
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName).forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallTicketSales(visitorId, visitorName).forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);
@@ -102,12 +101,12 @@ public class TicketBillRowService {
 	}
 
 	// Combo Type Ticket
-	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName, Date startDateTime, Date endDateTime) {
+	public List<TicketReportTableDTO> getOverallTicketSales(long visitorId, String visitorName, Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
 
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallTicketSales(visitorId, visitorName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);
@@ -115,17 +114,10 @@ public class TicketBillRowService {
 		return ticketReportTableDTOs;
 	}
 
-	/*
-	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName) {
+	// Parking Ticket
+	public List<TicketReportTableDTO> getOverallParkingTickets(long visitorId, String visitorName) {
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		// Single Type Ticket
-		ticketBillRowRepository.getOverallTicketSales().forEach(ticketReportTable -> {
-			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
-			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
-			ticketReportTableDTOs.add(ticketReportTableDTO);
-		});
-		// Combo Type Ticket
-		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName).forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallParkingTickets(visitorId, visitorName).forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);
@@ -133,26 +125,19 @@ public class TicketBillRowService {
 		return ticketReportTableDTOs;
 	}
 
-	public List<TicketReportTableDTO> getOverallTicketSales(long ticketId, String ticketName, Date startDateTime, Date endDateTime) {
+	// Parking Ticket
+	public List<TicketReportTableDTO> getOverallParkingTickets(long visitorId, String visitorName, Date startDateTime, Date endDateTime) {
 		Timestamp timestampStartDateTime = new Timestamp(startDateTime.getTime());
 		Timestamp timestampEndDateTime = new Timestamp(endDateTime.getTime());
 
 		List<TicketReportTableDTO> ticketReportTableDTOs = new ArrayList<TicketReportTableDTO>();
-		// Single Type Ticket
-		ticketBillRowRepository.getOverallTicketSales(timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
-			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
-			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
-			ticketReportTableDTOs.add(ticketReportTableDTO);
-		});
-		// Combo Type Ticket
-		ticketBillRowRepository.getOverallTicketSales(ticketId, ticketName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
+		ticketBillRowRepository.getOverallParkingTickets(visitorId, visitorName, timestampStartDateTime, timestampEndDateTime).forEach(ticketReportTable -> {
 			TicketReportTableDTO ticketReportTableDTO = new TicketReportTableDTO();
 			BeanUtils.copyProperties(ticketReportTable, ticketReportTableDTO);
 			ticketReportTableDTOs.add(ticketReportTableDTO);
 		});
 		return ticketReportTableDTOs;
 	}
-	*/
 
 	public List<TicketDailyReport> getDetailedReport(Short year) {
 		return ticketBillRowRepository.getDetailedReport(year);

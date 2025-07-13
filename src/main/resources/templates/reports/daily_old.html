@@ -68,26 +68,9 @@
 			}
 		</style>
 		<script th:inline="javascript" type="text/javascript">
-			$(document).ready(function() {
-				setTimeout(function() {
-					const $table = $('#tickets');
-					// const $container = $('#tickets_wrapper');
-					const $container = $("#tickets").parent();
-
-					if ($table.outerWidth() > $container.outerWidth()) {
-						console.log('Table not fits with container, scrollbar present.');
-						$table.find(".dt-column-title").css("font-size", "10px");
-						$table.find("th").css("padding", "0");
-						// $table.find("td").css("font-size", "10px");
-					}
-					else {
-						console.log('Table fits within the container, no scrollbar present.');
-					}
-				}, 1000);
-			});
 		</script>
 	</head>
-	<body>
+	<body class="vh-100">
 		<div th:replace="~{fragments/navbar :: navbar}"></div>
 		<div th:replace="~{fragments/toast :: toast}"></div>
 		<div class="container-fluid">
@@ -106,20 +89,20 @@
 					<img th:src="@{/icons/National_Council_of_Science_Museums_India_logo.png}" width="64" height="64" alt="National Council of Science Museums India " />
 				</div>
 				<div class="col-4 d-flex align-items-center justify-content-end">
-					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">Start Tkt No. [[${ticketSerials.get(ticketSerials.size() - 1)}]]</h5>
+					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">Start Tkt No. [[${ticketSerials.get(ticketSerials.size() - 1)}]] <!-- [[${reportTable.get(0).group[0].ticketSerial}]] --></h5>
 					<h5 th:if="${!#lists.isEmpty(ticketSerials)}" class="h5 mx-2">End Tkt No. [[${ticketSerials[0]}]]</h5>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-6 my-2 justify-content-center">
-					<form th:action="@{/report/summary}" method="POST" enctype="application/x-www-form-urlencoded" class="d-flex">
+					<form th:action="@{/report/daily}" method="POST" enctype="application/x-www-form-urlencoded" class="d-flex">
 						<div class="form-floating mx-2">
-							<input type="date" id="startDateTime" name="startDateTime" class="form-control" th:value="${startDateTime}" required autofocus>
+							<input type="date" id="startDateTime" name="startDateTime" class="form-control" th:value="${startDateTime}" placeholder="From Date" required autofocus>
 							<label for="startDateTime">From Date</label>
 						</div>
 						<div class="form-floating mx-2">
-							<input type="date" id="endDateTime" name="endDateTime" class="form-control" th:value="${endDateTime}" required>
+							<input type="date" id="endDateTime" name="endDateTime" class="form-control" th:value="${endDateTime}" placeholder="To Date" required>
 							<label for="endDateTime">To Date</label>
 						</div>
 						<div class="btn-group mx-2">
@@ -144,70 +127,40 @@
 			<div class="row">
 				<div class="col-12">
 					<h4 class="h4">COMPUTER TICKET REPORT</h4>
-					<table class="table border w-100 table-bordered" id="tickets">
+					<table class="table border table-bordered w-100" id="tickets">
 						<thead>
 							<tr>
-								<th rowspan="2"><!-- Serial No. --></th>
+								<th rowspan="2">Serial No.</th>
 								<th rowspan="2">Ticket</th>
-								<th th:colspan="${singleVisitorsName.size}" style="text-align: center;">Tickets Cancelled</th>
-								<th th:colspan="${singleVisitorsName.size}" style="text-align: center;">Tickets Issued</th>
-								<th th:colspan="${singleVisitorsName.size}" style="text-align: center;">Total Tickets</th>
+								<th:block th:each="visitorName : ${visitorsName}">
+									<th th:text="${visitorName}" colspan="2" style="text-align: center;"></th>
+								</th:block>
 								<th rowspan="2">Total Amount</th>
 							</tr>
 							<tr>
-								<th:block th:each="count : ${#numbers.sequence(0, 2, 1)}">
-									<th:block th:each="visitorName : ${singleVisitorsName}">
-										<th th:text="${visitorName}" style="text-align: center;"></th>
-									</th:block>
+								<th:block th:each="visitorName : ${visitorsName}">
+									<th style="text-align: right;">Count</th>
+									<th style="text-align: left;">Rate</th>
 								</th:block>
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="reportTable : ${singleTicketsReportTable}">
+							<th:block th:each="ticket : ${reportTable}">
 								<tr>
-									<td><!-- Serial No. --></td>
-									<td th:text="${reportTable.value[reportTable.value.length - 1].ticketName}"></td>
-									<th:block th:each="tickets : ${reportTable.value}">
-										<th:block th:each="ticket : ${tickets}">
-											<th:block th:each="group : ${ticket.group}">
-												<td th:text="${group.value.count}" style="text-align: right;"></td>
-											</th:block>
-										</th:block>
+									<td></td>
+									<td th:text="${ticket.ticketName}"></td>
+									<th:block th:each="group : ${ticket.group}">
+										<td th:text="${group.value.count}" style="text-align: right;"></td>
+										<td style="text-align: left;">₹[[${group.value.price}]]</td>
 									</th:block>
-									<td style="text-align: right;">₹[[${reportTable.value[reportTable.value.length - 1].subTotal}]]</td>
-								</tr>
-							</th:block>
-							<th:block th:each="reportTable : ${parkingTicketsReportTable}">
-								<tr>
-									<td><!-- Serial No. --></td>
-									<td th:text="${reportTable.value[reportTable.value.length - 1].ticketName}"></td>
-									<th:block th:each="tickets : ${reportTable.value}">
-										<th:block th:each="ticket : ${tickets}">
-											<th:block th:each="group : ${ticket.group}">
-												<td th:text="${group.value.count}" style="text-align: right;"></td>
-											</th:block>
-										</th:block>
-										<td th:if="${!singleVisitorsName.isEmpty}" th:each="count : ${#numbers.sequence(0, singleVisitorsName.size - 2, 1)}"></td>
-									</th:block>
-									<td style="text-align: right;">₹[[${reportTable.value[reportTable.value.length - 1].subTotal}]]</td>
-								</tr>
-							</th:block>
-							<th:block th:each="reportTable : ${comboTicketsReportTable}">
-								<tr>
-									<td><!-- Serial No. --></td>
-									<td th:text="${reportTable.value[reportTable.value.length - 1].ticketName}"></td>
-									<th:block th:each="tickets : ${reportTable.value}">
-										<td th:text="${tickets.ticketCount}"></td>
-										<td th:if="${!singleVisitorsName.isEmpty}" th:each="count : ${#numbers.sequence(0, singleVisitorsName.size - 2, 1)}"></td>
-									</th:block>
-									<td style="text-align: right;">₹[[${reportTable.value[reportTable.value.length - 1].subTotal}]]</td>
+									<td style="text-align: right;">₹[[${ticket.subTotal}]]</td>
 								</tr>
 							</th:block>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td th:colspan="${singleVisitorsName.size * 3} + 2" style="text-align: right;"><h5 class="h5" style="font-weight: bold;"></h5></td>
-								<td style="text-align: left;"><h5 class="h5" style="font-weight: bold;">₹[[${grandTotal}]]</h5></td>
+								<td th:colspan="${visitorsName.size * 2} + 2" style="text-align: right;"><h5 class="h5" style="font-weight: bold;"></h5></td>
+								<td style="text-align: right;"><h5 class="h5" style="font-weight: bold;">₹[[${grandTotal}]]</h5></td>
 							</tr>
 						</tfoot>
 					</table>
@@ -232,48 +185,33 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			var tableConfig = {
-				"aaSorting" : [], // Default sorting false
-				info : false,
-				ordering : false,
-				paging : false,
-				searching : false,
-				responsive : false,
-				destroy : false,
-				fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-					var index = iDisplayIndexFull + 1;
-					$("td:first", nRow).html(index);
-					return nRow;
-				},
-				stripeClasses: [],
-				footer: true
-			};
-			new DataTable('#tickets', tableConfig);
-			adjustTable();
+			$(document).ready(function() {
+				var tableConfig = {
+					"aaSorting" : [], // Default sorting false
+					info : false,
+					ordering : false,
+					paging : false,
+					searching : false,
+					responsive : false,
+					destroy : false,
+					fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+						var index = iDisplayIndexFull + 1;
+						$("td:first", nRow).html(index);
+						return nRow;
+					},
+					stripeClasses: [],
+					footer: true
+				};
+				new DataTable('#tickets', tableConfig);
+			});
 		</script>
-	</body>
 		<script type="text/javascript">
-			function adjustTable() {
-				const $table = $('#tickets');
-				// const $container = $('#tickets_wrapper');
-				const $container = $("#tickets").parent();
-
-				if ($table.outerWidth() > $container.outerWidth()) {
-					console.log('Table not fits with container, scrollbar present.');
-					$table.find(".dt-column-title").css("font-size", "10px");
-					$table.find("th").css("padding", "0");
-					// $table.find("td").css("font-size", "10px");
-				}
-				else {
-					console.log('Table fits within the container, no scrollbar present.');
-				}
-			}
 			$(document).ready(function() {
 				$(window).on("beforeprint", function() {
 					$("#navbarSupportedContent").css("visibility", "hidden");
 					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "hidden");
 					$("#navbarSupportedContent").parent().parent().css("visibility", "hidden");
-					$(document).find('form[action="/report/summary"]').each(function() {
+					$(document).find('form[action="/report/daily"]').each(function() {
 						$(this).find("input").prop("hidden", true);
 						$(this).find("label").css("visibility", "hidden");
 						$(this).find("button").css("visibility", "hidden");
@@ -285,7 +223,7 @@
 					$("#navbarSupportedContent").css("visibility", "visible");
 					$("#navbarSupportedContent").parent().find(".navbar-toggler-icon").parent().css("visibility", "visible");
 					$("#navbarSupportedContent").parent().parent().css("visibility", "visible");
-					$(document).find('form[action="/report/summary"]').each(function() {
+					$(document).find('form[action="/report/daily"]').each(function() {
 						$(this).find("input").prop("hidden", false);
 						$(this).find("label").css("visibility", "visible");
 						$(this).find("button").css("visibility", "visible");
@@ -295,4 +233,5 @@
 				});
 			});
 		</script>
+	</body>
 </html>

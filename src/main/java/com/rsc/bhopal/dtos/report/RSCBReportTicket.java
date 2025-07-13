@@ -10,5 +10,6 @@ public class RSCBReportTicket {
 	private String ticketName;
 
 	private HashMap<Long, RSCBReportGroup> group;
+	private int ticketCount;
 	private double subTotal;
 }
